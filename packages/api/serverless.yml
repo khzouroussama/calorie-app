@@ -1,13 +1,24 @@
+org: khzouroussama
+app: calorie-app
 service: calorie-app
 
 frameworkVersion: '3'
+
+useDotenv: true
+
+plugins:
+  - serverless-plugin-monorepo
+  - serverless-esbuild
 
 provider:
   name: aws
   runtime: nodejs18.x
   lambdaHashingVersion: '20201221'
+  region: ${env:REGION}
   environment:
     DYNAMODB_TABLE: ${self:service}-${sls:stage}
+    JWT_SECRET: ${env:JWT_SECRET}
+
   httpApi:
     cors: true
   iam:
@@ -24,12 +35,20 @@ provider:
           Resource: 'arn:aws:dynamodb:${aws:region}:*:table/${self:provider.environment.DYNAMODB_TABLE}'
 
 functions:
-  create:
-    handler: functions/food-entry/create.create
+  create-food-entry:
+    handler: src/food-entry/create-food-entry-handler.main
     events:
-      - httpApi:
+      - http:
           path: /food-entry
-          method: post
+          method: get
+
+custom:
+  esbuild:
+    bundle: true
+    minify: true
+    sourcemap: true
+    target: 'node14'
+    packager: yarn
 
 resources:
   Resources:
