@@ -15,9 +15,11 @@ provider:
   runtime: nodejs18.x
   lambdaHashingVersion: '20201221'
   region: ${env:REGION}
+  stage: ${opt:stage, 'dev'}
   environment:
-    DYNAMODB_TABLE: ${self:service}-${sls:stage}
+    DYNAMODB_TABLE: ${self:service}-${env:STAGE}
     JWT_SECRET: ${env:JWT_SECRET}
+    STAGE: ${self.provider.stage}
 
   httpApi:
     cors: true
@@ -52,7 +54,7 @@ custom:
 
 resources:
   Resources:
-    TodosDynamoDbTable:
+    CalorieAppDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:

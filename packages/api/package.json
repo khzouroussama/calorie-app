@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@calorie-app/http": "*",
+    "@calorie-app/db": "*",
     "uuid": "^3.1.0"
   }
 }
