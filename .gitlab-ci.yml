@@ -1,0 +1,62 @@
+stages:
+  - lint
+  - test
+  - deploy
+
+lint:
+  image: node:14
+  stage: lint
+  script:
+    - cd packages/api
+    - npm ci
+    - npm run lint # Ensure you have a lint script in your package.json
+  only:
+    changes:
+      - packages/api/**/*
+
+test:
+  image: node:14
+  stage: test
+  script:
+    - cd packages/api
+    - npm ci
+    - npm test # Ensure you have a test script in your package.json
+  only:
+    changes:
+      - packages/api/**/*
+
+deploy_staging:
+  image: node:14
+  stage: deploy
+  variables:
+    STAGE: 'staging'
+    JWT_SECRET: $STAGING_JWT_SECRET
+    REGION: 'eu-west-1'
+  script:
+    - npm install -g serverless
+    - cd packages/api
+    - npm ci
+    - serverless deploy -v --stage staging
+  only:
+    refs:
+      - dev
+    changes:
+      - packages/api/**/*
+
+deploy_prod:
+  image: node:14
+  stage: deploy
+  variables:
+    STAGE: 'staging'
+    JWT_SECRET: $PROD_JWT_SECRET
+    REGION: 'eu-west-1'
+  script:
+    - npm install -g serverless
+    - cd packages/api
+    - npm ci
+    - serverless deploy -v --stage prod
+  only:
+    refs:
+      - master
+    changes:
+      - packages/api/**/*
