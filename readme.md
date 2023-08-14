@@ -15,12 +15,11 @@ The monorepo is organized using Yarn workspaces into several packages and applic
 
 1. **Install Dependencies**
 
-   At the root of the monorepo, run:
+At the root of the monorepo, run:
 
-   ```
-   yarn install
-
-   ```
+```
+yarn install
+```
 
 2. **Set Up Environment Variables**
 
@@ -28,16 +27,16 @@ Based on the `.env.example` file in each package, set up the appropriate environ
 
 3. **Run the Mobile App**
 
-   ```
-   cd apps/mobile
-   yarn start
-   ```
+```
+cd apps/mobile
+yarn start
+```
 
 4. **Deploy the API**
 
 ```
-   cd packages/api
-   serverless deploy --stage <stage-name>
+cd packages/api
+serverless deploy --stage <stage-name>
 ```
 
 Replace `<stage-name>` with `dev`, `staging`, or `prod` based on your needs.
