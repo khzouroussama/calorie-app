@@ -1,5 +1,9 @@
-import { View } from 'react-native';
+import { Box, Typography } from '@/design-system';
 
 export const SignInScreen = () => {
-  return <View />;
+  return (
+    <Box sx={{ m: 'xxxl' }}>
+      <Typography variant="heading">login</Typography>
+    </Box>
+  );
 };

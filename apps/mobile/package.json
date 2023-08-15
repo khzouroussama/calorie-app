@@ -8,6 +8,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo-google-fonts/space-grotesk": "^0.2.3",
     "@gorhom/bottom-sheet": "^4.4.7",
     "@react-navigation/bottom-tabs": "^6.5.8",
     "@react-navigation/native": "^6.1.7",
@@ -16,6 +17,8 @@
     "@tanstack/react-query": "^4.32.6",
     "expo": "~49.0.7",
     "expo-constants": "^14.4.2",
+    "expo-dev-client": "^2.4.6",
+    "expo-font": "~11.4.0",
     "expo-splash-screen": "^0.20.5",
     "expo-status-bar": "^1.6.0",
     "expo-system-ui": "~2.4.0",
@@ -27,7 +30,8 @@
     "react-native-reanimated": "~3.3.0",
     "react-native-safe-area-context": "4.6.3",
     "react-native-screens": "~3.22.0",
-    "react-native-svg": "13.9.0"
+    "react-native-svg": "13.9.0",
+    "stable-hash": "^0.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -13,14 +13,12 @@ import { MainTabNavigator } from './main-tab-navigator';
 const Stack = createNativeStackNavigator();
 
 export const RootNavigator = () => {
-  const status = 'idle';
+  const status = 'signOut';
   const [isFirstTime] = useIsFirstAppStart();
 
   useEffect(() => {
-    if (status !== 'idle') {
-      (async () => await SplashScreen.hideAsync())();
-    }
-  }, [status]);
+    (async () => await SplashScreen.hideAsync())();
+  }, []);
 
   return (
     <SafeAreaProvider>
