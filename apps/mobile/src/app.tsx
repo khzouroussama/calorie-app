@@ -1,7 +1,6 @@
 import 'react-native-gesture-handler';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import * as SplashScreen from 'expo-splash-screen';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import FlashMessage from 'react-native-flash-message';
@@ -14,7 +13,15 @@ import {
   initialWindowMetrics,
 } from 'react-native-safe-area-context';
 
-SplashScreen.preventAutoHideAsync();
+import { Amplify } from 'aws-amplify';
+//
+import awsExports from './aws-exports';
+import { AuthProvider } from '@/shared/contexts';
+import { Authenticator } from '@aws-amplify/ui-react-native';
+
+Amplify.configure(awsExports);
+
+// SplashScreen.preventAutoHideAsync();
 
 export const App = () => {
   const [areFontsLoaded] = useFonts(customFontsToLoad);
@@ -22,14 +29,24 @@ export const App = () => {
   if (!areFontsLoaded) return null;
 
   return (
-    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-      <GestureHandlerRootView style={styles.container}>
-        <BottomSheetModalProvider>
-          <RootNavigator />
-          <FlashMessage position="top" />
-        </BottomSheetModalProvider>
-      </GestureHandlerRootView>
-    </SafeAreaProvider>
+    <AuthProvider>
+      <Authenticator
+        loginMechanisms={['email']}
+        signUpAttributes={['picture']}
+        components={{
+          SignIn: (props) => <Authenticator.SignIn {...props} />,
+        }}
+      >
+        <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+          <GestureHandlerRootView style={styles.container}>
+            <BottomSheetModalProvider>
+              <RootNavigator />
+              <FlashMessage position="top" />
+            </BottomSheetModalProvider>
+          </GestureHandlerRootView>
+        </SafeAreaProvider>
+      </Authenticator>
+    </AuthProvider>
   );
 };
 

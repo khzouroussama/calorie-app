@@ -99,6 +99,17 @@ resources:
             RequireNumbers: true
             RequireSymbols: true
 
+    CalorieAppUserPoolClient:
+      Type: 'AWS::Cognito::UserPoolClient'
+      Properties:
+        ClientName: 'calorie-app-user-pool-client-${self:provider.stage}'
+        UserPoolId:
+          Ref: CalorieAppUserPool
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH
+        GenerateSecret: false # Set to true if you're building a web application
+        RefreshTokenValidity: 30 # Duration in days
+
     AdminGroup:
       Type: 'AWS::Cognito::UserPoolGroup'
       Properties:

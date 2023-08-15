@@ -14,7 +14,7 @@ export const MainTabNavigator = () => {
     <Tab.Navigator screenOptions={({ route }) => ({})}>
       <Tab.Group
         screenOptions={{
-          headerShown: false,
+          headerShown: true,
         }}
       >
         <Tab.Screen
@@ -31,7 +31,7 @@ export const MainTabNavigator = () => {
           name="Stats"
           component={FoodEntriesScreen}
           options={{
-            title: 'Settings',
+            title: 'Stats',
           }}
         />
 
