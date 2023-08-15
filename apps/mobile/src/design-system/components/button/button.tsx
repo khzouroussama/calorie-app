@@ -44,8 +44,6 @@ function Button(
       [props.disabled, variant],
     );
 
-  console.log({ backgroundColor });
-
   return (
     <Pressable
       ref={ref}
