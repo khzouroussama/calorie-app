@@ -17,9 +17,9 @@ provider:
   region: ${env:REGION}
   stage: ${opt:stage, 'dev'}
   environment:
-    DYNAMODB_TABLE: ${self:service}-${env:STAGE}
+    DYNAMODB_TABLE: ${self:service}-${self:provider.stage}
     JWT_SECRET: ${env:JWT_SECRET}
-    STAGE: ${self.provider.stage}
+    STAGE: ${self:provider.stage}
 
   httpApi:
     cors: true
@@ -37,12 +37,24 @@ provider:
           Resource: 'arn:aws:dynamodb:${aws:region}:*:table/${self:provider.environment.DYNAMODB_TABLE}'
 
 functions:
+  sign-up:
+    handler: src/auth/sign-up/sign-up-handler.main
+    events:
+      - cognitoUserPool:
+          pool: calorie-app-user-pool-${self:provider.stage}
+          trigger: PostConfirmation
+          existing: true
+
   create-food-entry:
     handler: src/food-entry/create-food-entry-handler.main
     events:
       - http:
           path: /food-entry
           method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CalorieAppApiGatewayAuthorizer
 
 custom:
   esbuild:
@@ -66,3 +78,65 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+
+    CalorieAppUserPool:
+      Type: 'AWS::Cognito::UserPool'
+      Properties:
+        UserPoolName: 'calorie-app-user-pool-${self:provider.stage}'
+        UsernameAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+        Schema:
+          - AttributeDataType: String
+            Name: email
+            Required: true
+            Mutable: true
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+            RequireUppercase: true
+            RequireNumbers: true
+            RequireSymbols: true
+
+    CalorieAppUserPoolClient:
+      Type: 'AWS::Cognito::UserPoolClient'
+      Properties:
+        ClientName: 'calorie-app-user-pool-client-${self:provider.stage}'
+        UserPoolId:
+          Ref: CalorieAppUserPool
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH
+        GenerateSecret: false # Set to true if you're building a web application
+        RefreshTokenValidity: 30 # Duration in days
+
+    AdminGroup:
+      Type: 'AWS::Cognito::UserPoolGroup'
+      Properties:
+        GroupName: 'admin-${self:provider.stage}'
+        Description: 'Admin Group for ${self:provider.stage}'
+        UserPoolId:
+          Ref: CalorieAppUserPool
+        Precedence: 1
+
+    UserGroup:
+      Type: 'AWS::Cognito::UserPoolGroup'
+      Properties:
+        GroupName: 'user-${self:provider.stage}'
+        Description: 'User Group for ${self:provider.stage}'
+        UserPoolId:
+          Ref: CalorieAppUserPool
+        Precedence: 2
+
+    CalorieAppApiGatewayAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: calorieAppAuthorizer-${self:provider.stage}
+        IdentitySource: method.request.header.Authorization
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Type: COGNITO_USER_POOLS
+        ProviderARNs:
+          - Fn::GetAtt:
+              - CalorieAppUserPool
+              - Arn
