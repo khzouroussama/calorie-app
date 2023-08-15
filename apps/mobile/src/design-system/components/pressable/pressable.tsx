@@ -14,7 +14,7 @@ import { SxProps, resolveThemeValue } from '@/design-system/utils/buildSxProps';
 
 const ITEM_SCALE_FACTOR = 0.95;
 
-type PressableProps = {
+export type PressableProps = {
   containerStyle?: TouchableWithoutFeedbackProps['style'];
   style?: AnimateProps<ViewProps>['style'];
   activeScale?: number;
