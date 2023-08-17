@@ -1,6 +1,8 @@
 import { Box, Button, TextField, Typography } from '@/design-system';
+import { useAuthenticator } from '@aws-amplify/ui-react-native';
 
 export const FoodEntriesScreen = () => {
+  const { signOut } = useAuthenticator();
   return (
     <Box sx={{ mt: 'xxxl' }}>
       <Typography>hellp</Typography>
@@ -16,8 +18,8 @@ export const FoodEntriesScreen = () => {
           Hellp
         </Button>
 
-        <Button disabled variant="white" sx={{ m: 'md' }}>
-          Hellp
+        <Button onPress={signOut} variant="white" sx={{ m: 'md' }}>
+          Sign ou
         </Button>
       </Box>
     </Box>

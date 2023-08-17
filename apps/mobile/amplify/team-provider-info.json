@@ -10,6 +10,16 @@
       "StackName": "amplify-calorieapp-dev-192343",
       "StackId": "arn:aws:cloudformation:eu-west-1:167318327085:stack/amplify-calorieapp-dev-192343/e0962c70-3b98-11ee-bf2b-060333dd041b",
       "AmplifyAppId": "d3f9zgrcpewg06"
+    },
+    "categories": {
+      "auth": {
+        "calorieappccb652b3": {
+          "userPoolId": "eu-west-1_d6vDga9wU",
+          "userPoolName": "calorie-app-user-pool-staging",
+          "webClientId": "d00fe19191a6l0mic6aoob8cb",
+          "nativeClientId": "d00fe19191a6l0mic6aoob8cb"
+        }
+      }
     }
   }
 }

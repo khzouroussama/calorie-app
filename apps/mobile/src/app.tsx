@@ -17,7 +17,8 @@ import { Amplify } from 'aws-amplify';
 //
 import awsExports from './aws-exports';
 import { AuthProvider } from '@/shared/contexts';
-import { Authenticator } from '@aws-amplify/ui-react-native';
+import { OnboardingScreen } from './features/onboarding';
+import { useIsFirstAppStart } from './shared/hooks';
 
 Amplify.configure(awsExports);
 
@@ -25,27 +26,22 @@ Amplify.configure(awsExports);
 
 export const App = () => {
   const [areFontsLoaded] = useFonts(customFontsToLoad);
+  const [isFirstTime] = useIsFirstAppStart();
 
   if (!areFontsLoaded) return null;
 
+  if (isFirstTime) return <OnboardingScreen />;
+
   return (
     <AuthProvider>
-      <Authenticator
-        loginMechanisms={['email']}
-        signUpAttributes={['picture']}
-        components={{
-          SignIn: (props) => <Authenticator.SignIn {...props} />,
-        }}
-      >
-        <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-          <GestureHandlerRootView style={styles.container}>
-            <BottomSheetModalProvider>
-              <RootNavigator />
-              <FlashMessage position="top" />
-            </BottomSheetModalProvider>
-          </GestureHandlerRootView>
-        </SafeAreaProvider>
-      </Authenticator>
+      <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+        <GestureHandlerRootView style={styles.container}>
+          <BottomSheetModalProvider>
+            <RootNavigator />
+            <FlashMessage position="top" />
+          </BottomSheetModalProvider>
+        </GestureHandlerRootView>
+      </SafeAreaProvider>
     </AuthProvider>
   );
 };

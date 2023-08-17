@@ -2,7 +2,6 @@
   "name": "@calorie-app/api",
   "version": "1.0.0",
   "description": "serverless BE for the Calorie App",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "tsc -w",
@@ -14,14 +13,18 @@
   "devDependencies": {
     "@types/aws-sdk": "0.0.42",
     "@types/node": "^7.0.5",
+    "aws-sdk-client-mock": "^3.0.0",
+    "aws-sdk-client-mock-jest": "^3.0.0",
     "esbuild": "^0.19.1",
     "serverless-esbuild": "^1.46.0",
     "serverless-plugin-monorepo": "^0.11.0",
     "serverless-plugin-typescript": "^2.1.5"
   },
   "dependencies": {
-    "@calorie-app/http": "*",
+    "@aws-sdk/client-cognito-identity-provider": "^3.391.0",
     "@calorie-app/db": "*",
-    "uuid": "^3.1.0"
+    "@calorie-app/http": "*",
+    "uuid": "^3.1.0",
+    "yup": "^1.2.0"
   }
 }

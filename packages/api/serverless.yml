@@ -35,6 +35,11 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource: 'arn:aws:dynamodb:${aws:region}:*:table/${self:provider.environment.DYNAMODB_TABLE}'
+        - Effect: 'Allow'
+          Action:
+            - 'cognito-idp:AdminAddUserToGroup'
+          Resource:
+            - Fn::GetAtt: [CalorieAppUserPool, Arn]
 
 functions:
   sign-up:
@@ -46,11 +51,11 @@ functions:
           existing: true
 
   create-food-entry:
-    handler: src/food-entry/create-food-entry-handler.main
+    handler: src/food-entry/create-food-entry/create-food-entry-handler.main
     events:
       - http:
-          path: /food-entry
-          method: get
+          path: /v1/food-entries
+          method: post
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId:
@@ -63,6 +68,9 @@ custom:
     sourcemap: true
     target: 'node14'
     packager: yarn
+    external:
+      - '@aws-sdk/client-cognito-identity-provider'
+      - yup
 
 resources:
   Resources:
