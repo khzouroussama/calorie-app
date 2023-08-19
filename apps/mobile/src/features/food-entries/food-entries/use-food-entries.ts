@@ -22,8 +22,8 @@ export const useFoodEntries = createQuery<Response, Variables, AxiosError>({
 
     return {
       variables: {
-        dateFrom,
-        dateTo,
+        dateFrom: dateFrom?.toISOString(),
+        dateTo: dateTo?.toISOString(),
       },
     };
   },

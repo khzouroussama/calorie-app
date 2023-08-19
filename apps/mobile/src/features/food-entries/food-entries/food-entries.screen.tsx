@@ -6,6 +6,7 @@ import { FoodEntryCard } from './offer-entry-card.component';
 import { colors, spacing } from '@/design-system/theme';
 import { useNavigation } from '@react-navigation/native';
 import type { FoodEntry } from '../food-entries.types';
+import { FoodEntriesFilter } from './food-entries-filter';
 
 export const FoodEntriesScreen = () => {
   const navigation = useNavigation();
@@ -17,11 +18,11 @@ export const FoodEntriesScreen = () => {
   );
 
   return (
-    <Screen sx={{ px: 'md' }}>
-      <Box sx={{ row: true, my: 'sm', alignItems: 'center', gap: 'sm' }}>
-        <Typography variant="subheading" color="primary500">
-          TODO: Filters
-        </Typography>
+    <Screen>
+      <Box
+        sx={{ row: true, my: 'lg', px: 'md', alignItems: 'center', gap: 'sm' }}
+      >
+        <FoodEntriesFilter />
       </Box>
 
       {status === 'loading' ? (
@@ -36,7 +37,11 @@ export const FoodEntriesScreen = () => {
         <FlatList<FoodEntry>
           data={data}
           renderItem={renderItem}
-          ItemSeparatorComponent={() => <Box sx={{ py: 'xs' }} />}
+          contentContainerStyle={{
+            paddingHorizontal: spacing.md,
+            paddingBottom: spacing.xxl,
+          }}
+          ItemSeparatorComponent={() => <Box sx={{ py: 'xxs' }} />}
           refreshControl={
             <RefreshControl refreshing={isRefetching} onRefresh={refetch} />
           }

@@ -6,7 +6,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { useCallback } from 'react';
 import { useAddFoodEntry } from './use-add-food-entry';
 import { showMessage } from 'react-native-flash-message';
 import { useNavigation } from '@react-navigation/native';
@@ -47,7 +46,9 @@ export const AddFoodEntryScreen = () => {
           });
         }, 500);
 
-        queryClient.invalidateQueries(['foodEntries']);
+        queryClient.invalidateQueries({
+          queryKey: ['food-entries'],
+        });
 
         navigation.goBack();
       },

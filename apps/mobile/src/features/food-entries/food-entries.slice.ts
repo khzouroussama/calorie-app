@@ -5,8 +5,8 @@ import type { Store, StoreMiddleware } from '@/shared/store';
 interface FoodEntriesSlice {
   foodEntries: {
     filters: {
-      dateFrom: string | null;
-      dateTo: string | null;
+      dateFrom: Date | null;
+      dateTo: Date | null;
     };
   };
 }

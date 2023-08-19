@@ -13,6 +13,7 @@ import { useAddAuthHeader } from '@/shared/service/api';
 import { colors } from '@/design-system/theme';
 import { MainUserTabNavigator } from './main-user-tab-navigator';
 import { MainAdminTabNavigator } from './main-admin-tab-navigator';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 const Stack = createNativeStackNavigator();
 
@@ -32,24 +33,33 @@ export const RootNavigator = () => {
       }}
     >
       {authStatus === 'configuring' ? null : (
-        <NavigationContainer theme={theme}>
-          <Stack.Navigator
-            screenOptions={{
-              headerShown: false,
-              gestureEnabled: false,
-              animation: 'none',
-            }}
-          >
-            {!isAdmin ? (
-              <Stack.Screen name="UserMain" component={MainUserTabNavigator} />
-            ) : (
-              <Stack.Screen
-                name="AdminMain"
-                component={MainAdminTabNavigator}
-              />
-            )}
-          </Stack.Navigator>
-        </NavigationContainer>
+        <Animated.View
+          entering={FadeInDown}
+          exiting={FadeInDown}
+          style={{ flex: 1 }}
+        >
+          <NavigationContainer theme={theme}>
+            <Stack.Navigator
+              screenOptions={{
+                headerShown: false,
+                gestureEnabled: false,
+                animation: 'none',
+              }}
+            >
+              {!isAdmin ? (
+                <Stack.Screen
+                  name="UserMain"
+                  component={MainUserTabNavigator}
+                />
+              ) : (
+                <Stack.Screen
+                  name="AdminMain"
+                  component={MainAdminTabNavigator}
+                />
+              )}
+            </Stack.Navigator>
+          </NavigationContainer>
+        </Animated.View>
       )}
     </Authenticator>
   );

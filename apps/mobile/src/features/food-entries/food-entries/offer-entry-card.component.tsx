@@ -14,17 +14,24 @@ export const FoodEntryCard = ({ foodEntry }: FoodEntryCardProps) => {
 
   return (
     <Pressable
+      activeScale={0.98}
       onPress={() => {
         navigation.navigate('UserEditFoodEntry');
       }}
     >
-      <Card sx={{ row: true, justifyContent: 'space-between' }}>
+      <Card
+        sx={{
+          row: true,
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+        }}
+      >
         <Box sx={{ row: true }}>
           <Box
             sx={{
               width: 50,
               height: 50,
-              bgColor: 'secondary400',
+              bgColor: 'neutral300',
               borderRadius: 8,
               alignItems: 'center',
               justifyContent: 'center',
@@ -42,9 +49,11 @@ export const FoodEntryCard = ({ foodEntry }: FoodEntryCardProps) => {
             </Typography>
           </Box>
         </Box>
-        <Box sx={{ row: true }}>
-          <Icons.Bolt color={colors.primary500} />
-          <Typography color="primary500">{calories} Cal</Typography>
+        <Box sx={{ row: true, alignItems: 'center' }}>
+          <Icons.Bolt size={18} strokeWidth={1.5} color={colors.primary500} />
+          <Typography size="xs" variant="bold" color="primary500">
+            {calories} Cal
+          </Typography>
         </Box>
       </Card>
     </Pressable>

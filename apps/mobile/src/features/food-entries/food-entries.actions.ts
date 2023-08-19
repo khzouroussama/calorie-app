@@ -3,7 +3,10 @@ import { StateCreator } from 'zustand';
 import type { Store, StoreMiddleware } from '@/shared/store';
 
 interface FoodEntriesSliceActions {
-  onUserFoodEntryFilterChange: (filter: string, value: string) => void;
+  onUserFoodEntryFilterChange: (
+    filter: 'dateFrom' | 'dateTo',
+    value: Date,
+  ) => void;
 }
 
 const createFoodEntriesActions: StateCreator<
@@ -12,7 +15,11 @@ const createFoodEntriesActions: StateCreator<
   [],
   FoodEntriesSliceActions
 > = (set) => ({
-  onUserFoodEntryFilterChange: (filter, value) => {},
+  onUserFoodEntryFilterChange: (filter, value) => {
+    set((state) => {
+      state.foodEntries.filters[filter] = value;
+    });
+  },
 });
 
 export { createFoodEntriesActions };
