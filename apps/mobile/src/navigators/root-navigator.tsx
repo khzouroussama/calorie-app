@@ -2,27 +2,26 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect } from 'react';
 
-import { NavigationContainer } from '@react-navigation/native';
+import {
+  DefaultTheme,
+  NavigationContainer,
+  Theme,
+} from '@react-navigation/native';
 
-import { MainTabNavigator } from './main-tab-navigator';
-import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react-native';
-import axios from 'axios';
+import { Authenticator } from '@aws-amplify/ui-react-native';
+import { useAddAuthHeader } from '@/shared/service/api';
+import { colors } from '@/design-system/theme';
+import { MainUserTabNavigator } from './main-user-tab-navigator';
+import { MainAdminTabNavigator } from './main-admin-tab-navigator';
 
 const Stack = createNativeStackNavigator();
 
 export const RootNavigator = () => {
-  const { user } = useAuthenticator((context) => [context.user]);
+  const { isAdmin, authStatus } = useAddAuthHeader();
 
   useEffect(() => {
-    if (user) {
-      const token = user.getSignInUserSession().getAccessToken();
-      axios.defaults.headers.common['Authorization'] = token.getJwtToken();
-    }
-  }, []);
-
-  useEffect(() => {
-    (async () => await SplashScreen.hideAsync())();
-  }, []);
+    if (authStatus !== 'configuring') (async () => SplashScreen.hideAsync())();
+  }, [authStatus]);
 
   return (
     <Authenticator
@@ -32,17 +31,37 @@ export const RootNavigator = () => {
         SignIn: (props) => <Authenticator.SignIn {...props} />,
       }}
     >
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-            gestureEnabled: false,
-            animation: 'none',
-          }}
-        >
-          <Stack.Screen name="Main" component={MainTabNavigator} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      {authStatus === 'configuring' ? null : (
+        <NavigationContainer theme={theme}>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+              gestureEnabled: false,
+              animation: 'none',
+            }}
+          >
+            {!isAdmin ? (
+              <Stack.Screen name="UserMain" component={MainUserTabNavigator} />
+            ) : (
+              <Stack.Screen
+                name="AdminMain"
+                component={MainAdminTabNavigator}
+              />
+            )}
+          </Stack.Navigator>
+        </NavigationContainer>
+      )}
     </Authenticator>
   );
+};
+
+const theme: Theme = {
+  dark: false,
+  colors: {
+    ...DefaultTheme.colors,
+    background: colors.background,
+    text: colors.text,
+    border: colors.border,
+    primary: colors.primary500,
+  },
 };

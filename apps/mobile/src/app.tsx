@@ -19,6 +19,7 @@ import awsExports from './aws-exports';
 import { AuthProvider } from '@/shared/contexts';
 import { OnboardingScreen } from './features/onboarding';
 import { useIsFirstAppStart } from './shared/hooks';
+import { APIProvider } from './shared/service/api';
 
 Amplify.configure(awsExports);
 
@@ -34,14 +35,16 @@ export const App = () => {
 
   return (
     <AuthProvider>
-      <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-        <GestureHandlerRootView style={styles.container}>
-          <BottomSheetModalProvider>
-            <RootNavigator />
-            <FlashMessage position="top" />
-          </BottomSheetModalProvider>
-        </GestureHandlerRootView>
-      </SafeAreaProvider>
+      <APIProvider>
+        <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+          <GestureHandlerRootView style={styles.container}>
+            <BottomSheetModalProvider>
+              <RootNavigator />
+              <FlashMessage position="top" />
+            </BottomSheetModalProvider>
+          </GestureHandlerRootView>
+        </SafeAreaProvider>
+      </APIProvider>
     </AuthProvider>
   );
 };
