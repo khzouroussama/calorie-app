@@ -1,15 +1,12 @@
-import AWS, { DynamoDB } from 'aws-sdk';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 
-AWS.config.update({
-  region: process.env.REGION,
-});
-
-let client: DynamoDB | null = null;
+let client: DynamoDBClient | null = null;
 
 export function getClient() {
   if (!client) {
-    client = new DynamoDB();
+    return new DynamoDBClient({
+      region: process.env.REGION,
+    });
   }
-
   return client;
 }
