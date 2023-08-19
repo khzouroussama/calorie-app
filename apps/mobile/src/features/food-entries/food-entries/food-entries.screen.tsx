@@ -38,7 +38,6 @@ export const FoodEntriesScreen = () => {
           data={data}
           renderItem={renderItem}
           contentContainerStyle={{
-            paddingHorizontal: spacing.md,
             paddingBottom: spacing.xxl,
           }}
           ItemSeparatorComponent={() => <Box sx={{ py: 'xxs' }} />}

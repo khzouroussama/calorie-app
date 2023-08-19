@@ -21,6 +21,7 @@ export const FoodEntryCard = ({ foodEntry }: FoodEntryCardProps) => {
     >
       <Card
         sx={{
+          mx: 'md',
           row: true,
           justifyContent: 'space-between',
           alignItems: 'flex-start',
