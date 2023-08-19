@@ -1,5 +1,5 @@
 import { Item, ItemKeys, createItem, getItem } from '@calorie-app/db';
-import { DynamoDB } from 'aws-sdk';
+import { AttributeValue } from '@aws-sdk/client-dynamodb';
 
 // Global Entry Count
 
@@ -23,6 +23,14 @@ export class GlobalEntryCountKeys extends ItemKeys {
   get sk() {
     return this.date;
   }
+
+  get gsi1pk(): string | undefined {
+    return undefined;
+  }
+
+  get gsi1sk(): string | undefined {
+    return undefined;
+  }
 }
 
 export class GlobalEntryCount extends Item<GlobalEntryCountModel> {
@@ -30,7 +38,9 @@ export class GlobalEntryCount extends Item<GlobalEntryCountModel> {
     super();
   }
 
-  static fromItem(attributeMap: DynamoDB.AttributeMap): GlobalEntryCountModel {
+  static fromItem(
+    attributeMap: Record<string, AttributeValue>,
+  ): GlobalEntryCountModel {
     return {
       date: attributeMap.date.S!,
       count: parseFloat(attributeMap.count.N || '0'),
@@ -43,6 +53,14 @@ export class GlobalEntryCount extends Item<GlobalEntryCountModel> {
 
   toItem() {
     return this.marshall(this.globalEntryCount);
+  }
+
+  get gsi1pk(): string | undefined {
+    return undefined;
+  }
+
+  get gsi1sk(): string | undefined {
+    return undefined;
   }
 }
 
@@ -69,6 +87,14 @@ export class UserCalorieCountKeys extends ItemKeys {
   get sk() {
     return this.date;
   }
+
+  get gsi1pk(): string | undefined {
+    return undefined;
+  }
+
+  get gsi1sk(): string | undefined {
+    return undefined;
+  }
 }
 
 export class UserCalorieCount extends Item<UserCalorieCountModel> {
@@ -76,7 +102,9 @@ export class UserCalorieCount extends Item<UserCalorieCountModel> {
     super();
   }
 
-  static fromItem(attributeMap: DynamoDB.AttributeMap): UserCalorieCountModel {
+  static fromItem(
+    attributeMap: Record<string, AttributeValue>,
+  ): UserCalorieCountModel {
     return {
       userId: attributeMap.userId.S!,
       date: attributeMap.date.S!,

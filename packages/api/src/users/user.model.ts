@@ -1,6 +1,6 @@
 import { Item, ItemKeys, createItem, getItem } from '@calorie-app/db';
 import { UserRoles } from './user.types';
-import { DynamoDB } from 'aws-sdk';
+import { AttributeValue } from '@aws-sdk/client-dynamodb';
 
 export interface UserModel {
   /** The user's unique ID from cognito (sub) */
@@ -24,6 +24,14 @@ export class UserKeys extends ItemKeys {
   get sk() {
     return `${UserKeys.ENTITY_TYPE}#${this.userId}`;
   }
+
+  get gsi1pk(): string | undefined {
+    return undefined;
+  }
+
+  get gsi1sk(): string | undefined {
+    return undefined;
+  }
 }
 
 export class User extends Item<UserModel> {
@@ -31,7 +39,7 @@ export class User extends Item<UserModel> {
     super();
   }
 
-  static fromItem(attributeMap: DynamoDB.AttributeMap): UserModel {
+  static fromItem(attributeMap: Record<string, AttributeValue>): UserModel {
     return {
       id: attributeMap.id.S!,
       email: attributeMap.email.S!,

@@ -7,7 +7,7 @@ import {
   getClient,
   getItem,
 } from '@calorie-app/db';
-import { DynamoDB } from 'aws-sdk';
+import { NativeAttributeValue } from '@aws-sdk/util-dynamodb';
 import { UserKeys } from '../users/user.model';
 import {
   GlobalEntryCount,
@@ -19,7 +19,8 @@ export interface FoodEntryModel {
   id?: string;
   name: string;
   calories: number;
-  photoLink?: string;
+  photoUrl?: string;
+  consumptionDate: string;
   createdAt?: string;
 }
 
@@ -52,17 +53,21 @@ export class FoodEntry extends Item<FoodEntryModel> {
     super();
   }
 
-  static fromItem(attributeMap: DynamoDB.AttributeMap): FoodEntryModel {
+  static fromItem(
+    attributeMap: Record<string, NativeAttributeValue>,
+  ): FoodEntryModel {
     return {
       id: attributeMap.id.S!,
       name: attributeMap.name.S!,
       calories: parseFloat(attributeMap.calories.N || '0'),
-      photoLink: attributeMap.photoLink.S!,
+      consumptionDate: attributeMap.consumptionDate.S!,
+      photoUrl: attributeMap.photoUrl.S!,
+      createdAt: attributeMap.photoUrl.S!,
     };
   }
 
   get keys() {
-    return new FoodEntryKeys(this.userId, this.foodEntry.id!);
+    return new FoodEntryKeys(this.userId, this.foodEntry.consumptionDate!);
   }
 
   toItem() {
@@ -80,7 +85,7 @@ export const createFoodEntry = async (
 
   const food = new FoodEntry(userId, {
     ...foodEntry,
-    id: `${new Date().toISOString()}`,
+    createdAt: `${new Date().toISOString()}`,
   });
 
   const globalEntryCount = new GlobalEntryCount({
@@ -91,6 +96,19 @@ export const createFoodEntry = async (
     userId,
     date: creationDate.split('T')[0],
   });
+
+  console.log(
+    JSON.stringify({
+      t: food,
+      item: food.toItem(),
+      globalEntryCountkeystoitem: globalEntryCount.keys.toItem(),
+      globalEntryCount: globalEntryCount,
+      globalEntryCountToItem: globalEntryCount.toItem(),
+      userCalorieCount,
+      userCalorieCountToItem: userCalorieCount.toItem(),
+      userCalorieCountkeys: userCalorieCount.keys.toItem(),
+    }),
+  );
 
   await executeTransactWrite({
     client,

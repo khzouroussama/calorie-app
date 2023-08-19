@@ -61,6 +61,17 @@ functions:
             authorizerId:
               Ref: CalorieAppApiGatewayAuthorizer
 
+  get-food-entries:
+    handler: src/food-entry/get-food-entries/get-food-entries-handler.main
+    events:
+      - http:
+          path: /v1/food-entries
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CalorieAppApiGatewayAuthorizer
+
 custom:
   esbuild:
     bundle: true
@@ -70,6 +81,7 @@ custom:
     packager: yarn
     external:
       - '@aws-sdk/client-cognito-identity-provider'
+      - '@aws-sdk/util-dynamodb'
       - yup
 
 resources:
@@ -79,11 +91,28 @@ resources:
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          - AttributeName: id
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: S
+          - AttributeName: GSI1PK
+            AttributeType: S
+          - AttributeName: GSI1SK
             AttributeType: S
         KeySchema:
-          - AttributeName: id
+          - AttributeName: PK
             KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: GSI1
+            KeySchema:
+              - AttributeName: GSI1PK
+                KeyType: HASH
+              - AttributeName: GSI1SK
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
 
