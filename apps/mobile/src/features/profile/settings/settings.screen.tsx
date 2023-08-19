@@ -14,7 +14,7 @@ export const SettingsScreen = () => {
   const { signOut } = useAuthenticator();
   return (
     <Screen sx={{ p: 'md' }}>
-      <Card>
+      <Card sx={{ mt: 'sm' }}>
         <Box sx={{ alignItems: 'center' }}>
           <Icons.Salad size={44} color={colors.primary500} strokeWidth={1.5} />
         </Box>
@@ -29,7 +29,7 @@ export const SettingsScreen = () => {
         </Box>
       </Card>
 
-      <Card>
+      <Card sx={{ mt: 'lg' }}>
         <Typography style={{ textAlign: 'center' }}>
           Want to logout ?
         </Typography>

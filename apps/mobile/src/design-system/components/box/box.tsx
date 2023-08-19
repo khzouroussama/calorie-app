@@ -14,7 +14,7 @@ export type BoxProps = {
  *  <Typography>Hello World</Typography>
  * </Box>
  */
-function Box(props: BoxProps, ref: ForwardedRef<typeof View>) {
+function Box(props: BoxProps, ref: ForwardedRef<typeof View>): JSX.Element {
   const { sx, style, ...rest } = props;
 
   const sxStyles = useMemo(

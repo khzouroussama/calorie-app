@@ -1,11 +1,14 @@
 import Box from '../box/box';
 
-export const Card = ({ children, ...rest }) => {
+type CardProps = {
+  children: React.ReactNode;
+} & React.ComponentProps<typeof Box>;
+
+export const Card = ({ children, ...rest }: CardProps) => {
   return (
     <Box
       {...rest}
       sx={{
-        my: 'sm',
         gap: 'sm',
         border: 1,
         borderColor: 'neutral300',

@@ -10,6 +10,7 @@ import { useCallback } from 'react';
 import { useAddFoodEntry } from './use-add-food-entry';
 import { showMessage } from 'react-native-flash-message';
 import { useNavigation } from '@react-navigation/native';
+import { queryClient } from '@/shared/service/api';
 
 export type AddFoodEntryFormData = {
   name: string;
@@ -37,13 +38,18 @@ export const AddFoodEntryScreen = () => {
   const { mutate: addFoodEntry, isLoading } = useAddFoodEntry();
 
   const onSubmit = (data: AddFoodEntryFormData) => {
-    console.log({ data });
     addFoodEntry(data, {
       onSuccess: () => {
-        showMessage({
-          message: 'Food entry added successfully!',
-          type: 'success',
-        });
+        setTimeout(() => {
+          showMessage({
+            message: 'Food entry added successfully!',
+            type: 'success',
+          });
+        }, 500);
+
+        queryClient.invalidateQueries(['foodEntries']);
+
+        navigation.goBack();
       },
       onError: ({ message }) => {
         setTimeout(() => {

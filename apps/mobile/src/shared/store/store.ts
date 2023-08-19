@@ -1,10 +1,8 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
-import {
-  createFoodEntriesSlice,
-  createFoodEntriesActions,
-} from '@/features/food-entries';
+import { createFoodEntriesSlice } from '@/features/food-entries/food-entries.slice';
+import { createFoodEntriesActions } from '@/features/food-entries/food-entries.actions';
 
 import type {
   FoodEntriesSlice,
@@ -23,7 +21,6 @@ export type StoreMiddleware = [['zustand/immer', never]];
 export const store = create<Store, StoreMiddleware>(
   immer((...a) => ({
     ...createFoodEntriesSlice(...a),
-    foodEntries: { filters: { dateTo: null, dateFrom: null } },
     actions: {
       ...createFoodEntriesActions(...a),
     },

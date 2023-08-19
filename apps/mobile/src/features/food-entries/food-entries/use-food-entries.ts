@@ -10,14 +10,15 @@ type Variables = { dateFrom: string; dateTo: string };
 export const useFoodEntries = createQuery<Response, Variables, AxiosError>({
   primaryKey: 'food-entries',
   queryFn: async ({ queryKey: [primaryKey, { dateFrom, dateTo }] }) => {
-    const {
-      data: { foodEntries },
-    } = await axios.get(`${primaryKey}?dateFrom=${dateFrom}&dateTo=${dateTo}`);
+    const response = await axios.get(
+      `${primaryKey}?dateFrom=${dateFrom}&dateTo=${dateTo}`,
+    );
 
-    return foodEntries;
+    return response.data?.data?.foodEntries ?? [];
   },
   useDefaultOptions() {
-    const { dateTo, dateFrom } = useStore((state) => state.foodEntries.filters);
+    const dateFrom = useStore((state) => state.foodEntries.filters.dateFrom);
+    const dateTo = useStore((state) => state.foodEntries.filters.dateTo);
 
     return {
       variables: {
