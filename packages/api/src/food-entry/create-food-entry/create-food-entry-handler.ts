@@ -3,8 +3,8 @@ import {
   createHandler,
   httpError,
   httpResponse,
+  schemaValidator,
 } from '@calorie-app/http';
-import { schemaValidator } from '@calorie-app/http';
 import { FoodEntryModel, createFoodEntry } from '../food-entry.model';
 import { object, string } from 'yup';
 

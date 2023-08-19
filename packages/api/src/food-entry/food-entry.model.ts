@@ -6,6 +6,7 @@ import {
   executeTransactWrite,
   getClient,
   getItem,
+  query,
 } from '@calorie-app/db';
 import { NativeAttributeValue } from '@aws-sdk/util-dynamodb';
 import { UserKeys } from '../users/user.model';
@@ -57,12 +58,12 @@ export class FoodEntry extends Item<FoodEntryModel> {
     attributeMap: Record<string, NativeAttributeValue>,
   ): FoodEntryModel {
     return {
-      id: attributeMap.id.S!,
-      name: attributeMap.name.S!,
-      calories: parseFloat(attributeMap.calories.N || '0'),
-      consumptionDate: attributeMap.consumptionDate.S!,
-      photoUrl: attributeMap.photoUrl.S!,
-      createdAt: attributeMap.photoUrl.S!,
+      id: attributeMap?.id?.S,
+      name: attributeMap?.name?.S,
+      calories: parseFloat(attributeMap?.calories?.N || '0'),
+      consumptionDate: attributeMap?.consumptionDate?.S,
+      photoUrl: attributeMap?.photoUrl?.S,
+      createdAt: attributeMap?.createdAt?.S,
     };
   }
 
@@ -193,4 +194,22 @@ export const updateFoodEntry = async (
   });
 
   return { success: true };
+};
+
+export const getFoodEntries = async (userKeys: UserKeys) => {
+  const result = await query({
+    KeyConditionExpression: '#pk = :pk AND begins_with(#sk, :sk)',
+    ExpressionAttributeNames: {
+      '#pk': 'PK',
+      '#sk': 'SK',
+    },
+    ExpressionAttributeValues: {
+      ':pk': { S: userKeys.pk },
+      ':sk': { S: FoodEntryKeys.ENTITY_TYPE },
+    },
+  });
+
+  console.log({ result: result });
+
+  return result.Items?.map((item) => FoodEntry.fromItem(item));
 };
