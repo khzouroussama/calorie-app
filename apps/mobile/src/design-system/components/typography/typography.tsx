@@ -1,10 +1,10 @@
-import { colors, typography } from '@/design-system/theme';
+import { Color, colors, typography } from '@/design-system/theme';
 import React from 'react';
 import { StyleProp, Text, TextProps, TextStyle } from 'react-native';
 
 type Sizes = keyof typeof sizeStyles;
 type Weights = keyof typeof typography.primary;
-type Variants = keyof typeof presets;
+type Variants = keyof typeof variants;
 
 export interface TypographyProps extends TextProps {
   text?: string;
@@ -12,19 +12,29 @@ export interface TypographyProps extends TextProps {
   variant?: Variants;
   weight?: Weights;
   size?: Sizes;
+  color?: Color;
   children?: React.ReactNode;
 }
 
 export function Typography(props: TypographyProps) {
-  const { weight, size, text, children, style: styleOverride, ...rest } = props;
+  const {
+    weight,
+    size,
+    text,
+    color,
+    children,
+    style: styleOverride,
+    ...rest
+  } = props;
 
   const content = text || children;
 
-  const preset: Variants = presets[props.variant] ? props.variant : 'default';
+  const variant: Variants = variants[props.variant] ? props.variant : 'default';
   const textStyles: StyleProp<TextStyle> = [
-    presets[preset],
+    variants[variant],
     fontWeightStyles[weight],
     sizeStyles[size],
+    { color: colors[color] },
     styleOverride,
   ];
 
@@ -52,7 +62,7 @@ const fontWeightStyles: Record<Weights, TextStyle> = Object.entries(
     return { ...acc, [weight]: { fontFamily } };
   },
   {
-    light: {}, // Provide default values for each weight
+    light: {},
     normal: {},
     medium: {},
     semiBold: {},
@@ -66,16 +76,11 @@ const baseStyle: StyleProp<TextStyle> = [
   { color: colors.text },
 ];
 
-const presets = {
+const variants = {
   default: baseStyle,
-
   bold: [baseStyle, fontWeightStyles.bold],
-
   heading: [baseStyle, sizeStyles.xxl, fontWeightStyles.bold],
-
   subheading: [baseStyle, sizeStyles.lg, fontWeightStyles.medium],
-
   formLabel: [baseStyle, fontWeightStyles.medium],
-
   formHelper: [baseStyle, sizeStyles.sm, fontWeightStyles.normal],
 };

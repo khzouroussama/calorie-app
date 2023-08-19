@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { ViewProps, ViewStyle } from 'react-native';
 import { colors, spacing } from '../theme';
 import type { Spacing } from '../theme';
@@ -22,10 +23,7 @@ type SxInheritedProps =
   | 'top'
   | 'left'
   | 'right'
-  | 'bottom'
-  | 'gap'
-  | 'rowGap'
-  | 'columnGap';
+  | 'bottom';
 
 export type SxProps = {
   row?: boolean;
@@ -43,6 +41,9 @@ export type SxProps = {
   mb?: Spacing;
   ml?: Spacing;
   mr?: Spacing;
+  gap?: Spacing;
+  rowGap?: Spacing;
+  columnGap?: Spacing;
   bgColor?: Color;
   border?: number;
   borderColor?: Color;

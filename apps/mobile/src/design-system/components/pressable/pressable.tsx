@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { forwardRef, memo, useMemo } from 'react';
 import Animated, {
   AnimateProps,
   useAnimatedStyle,
@@ -7,10 +7,14 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import { TouchableWithoutFeedbackProps, ViewProps } from 'react-native';
+import { ViewProps } from 'react-native';
 import { Color, colors } from '@/design-system/theme';
 import { buildBoxStyles } from '@/design-system/utils';
 import { SxProps, resolveThemeValue } from '@/design-system/utils/buildSxProps';
+
+type TouchableWithoutFeedbackProps = React.ComponentPropsWithoutRef<
+  typeof TouchableWithoutFeedback
+>;
 
 const ITEM_SCALE_FACTOR = 0.95;
 
@@ -30,73 +34,77 @@ export type PressableProps = {
  * @example
  * <Pressable activeScale={0.98} />
  */
-function Pressable(
-  {
-    style,
-    containerStyle,
-    children,
-    activeScale = ITEM_SCALE_FACTOR,
-    pressedBgColor,
-    onPressIn,
-    onPressOut,
-    ...rest
-  }: PressableProps,
-  ref: React.ForwardedRef<typeof TouchableWithoutFeedback>,
-) {
-  const scale = useSharedValue(1);
+export const Pressable = memo(
+  forwardRef<typeof TouchableWithoutFeedback, PressableProps>(
+    (
+      {
+        style,
+        containerStyle,
+        children,
+        activeScale = ITEM_SCALE_FACTOR,
+        pressedBgColor,
+        onPressIn,
+        onPressOut,
+        ...rest
+      },
+      ref,
+    ): JSX.Element => {
+      const scale = useSharedValue(1);
 
-  const pressedBackgroundColor = useMemo(() => {
-    return resolveThemeValue(colors, pressedBgColor);
-  }, [pressedBgColor]);
+      const pressedBackgroundColor = useMemo(() => {
+        return resolveThemeValue(colors, pressedBgColor);
+      }, [pressedBgColor]);
 
-  const originalBackgroundColor = useMemo(() => {
-    return resolveThemeValue(colors, rest?.sx?.bgColor);
-  }, [rest?.sx?.bgColor, colors]);
+      const originalBackgroundColor = useMemo(() => {
+        return resolveThemeValue(colors, rest?.sx?.bgColor);
+      }, [rest?.sx?.bgColor]);
 
-  const bgColor = useDerivedValue(() => {
-    return withTiming(
-      scale.value === activeScale
-        ? pressedBackgroundColor
-        : originalBackgroundColor,
-      { duration: 100 },
-    );
-  });
+      const bgColor = useDerivedValue(() => {
+        return withTiming(
+          scale.value === activeScale
+            ? pressedBackgroundColor
+            : originalBackgroundColor,
+          { duration: 100 },
+        );
+      });
 
-  const animatedStyle = useAnimatedStyle(() => {
-    const backgroundColor = bgColor.value;
-    const transform = [{ scale: withTiming(scale.value, { duration: 100 }) }];
+      const animatedStyle = useAnimatedStyle(() => {
+        const backgroundColor = bgColor.value;
+        const transform = [
+          { scale: withTiming(scale.value, { duration: 100 }) },
+        ];
 
-    return originalBackgroundColor && pressedBackgroundColor
-      ? { backgroundColor, transform }
-      : { transform };
-  });
+        return originalBackgroundColor && pressedBackgroundColor
+          ? { backgroundColor, transform }
+          : { transform };
+      });
 
-  const handleOnPressIn = (e) => {
-    scale.value = activeScale;
-    onPressIn && onPressIn(e);
-  };
+      const handleOnPressIn = () => {
+        scale.value = activeScale;
+        if (onPressIn) onPressIn();
+      };
 
-  const handleOnPressOut = (e) => {
-    scale.value = 1;
-    onPressOut && onPressOut(e);
-  };
+      const handleOnPressOut = () => {
+        scale.value = 1;
+        if (onPressOut) onPressOut();
+      };
 
-  const viewStyles = useMemo(
-    () => [animatedStyle, buildBoxStyles(rest.sx), style],
-    [animatedStyle, rest, style],
-  );
+      const viewStyles = useMemo(
+        () => [animatedStyle, buildBoxStyles(rest.sx), style],
+        [animatedStyle, rest, style],
+      );
 
-  return (
-    <TouchableWithoutFeedback
-      ref={ref}
-      {...(rest as any)}
-      style={containerStyle}
-      onPressIn={handleOnPressIn}
-      onPressOut={handleOnPressOut}
-    >
-      <Animated.View style={viewStyles}>{children}</Animated.View>
-    </TouchableWithoutFeedback>
-  );
-}
-
-export default memo(React.forwardRef(Pressable));
+      return (
+        <TouchableWithoutFeedback
+          ref={ref}
+          {...rest}
+          style={containerStyle}
+          onPressIn={handleOnPressIn}
+          onPressOut={handleOnPressOut}
+        >
+          <Animated.View style={viewStyles}>{children}</Animated.View>
+        </TouchableWithoutFeedback>
+      );
+    },
+  ),
+);

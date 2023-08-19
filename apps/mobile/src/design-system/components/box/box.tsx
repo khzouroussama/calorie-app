@@ -24,7 +24,13 @@ function Box(props: BoxProps, ref: ForwardedRef<typeof View>) {
     [stableHash(sx)],
   );
 
-  return <View ref={ref} style={sxStyles} {...(rest as any)} />;
+  return (
+    <View
+      ref={ref}
+      style={useMemo(() => [sxStyles, style], [style, sxStyles])}
+      {...(rest as any)}
+    />
+  );
 }
 
 export default memo(forwardRef(Box));

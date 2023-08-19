@@ -61,7 +61,9 @@ function Button(
       }}
     >
       {loading && <ActivityIndicator size={10} />}
-      {Icon && !loading && <Icon color={color} size={iconSize} />}
+      {Icon && !loading && (
+        <Icon color={colors[color]} size={iconSize} strokeWidth={1.5} />
+      )}
       {(Icon || loading) && <Box sx={{ width: spacing.sm }} />}
       {(!!title || !!props.children) && (
         <Typography

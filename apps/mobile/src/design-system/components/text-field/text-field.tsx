@@ -36,6 +36,7 @@ export interface TextFieldProps extends Omit<TextInputProps, 'ref'> {
   inputWrapperStyle?: StyleProp<ViewStyle>;
   RightAccessory?: ComponentType<TextFieldAccessoryProps>;
   LeftAccessory?: ComponentType<TextFieldAccessoryProps>;
+  error?: string;
 }
 
 export const TextField = forwardRef(function TextField(
@@ -51,6 +52,7 @@ export const TextField = forwardRef(function TextField(
     LeftAccessory,
     HelperTextProps,
     LabelTextProps,
+    error,
     style: inputStyleOverride,
     containerStyle: containerStyleOverride,
     inputWrapperStyle: inputWrapperStyleOverride,
@@ -84,7 +86,7 @@ export const TextField = forwardRef(function TextField(
         />
       )}
 
-      <View style={styles.inputWrapper}>
+      <View style={[styles.inputWrapper, error && styles.errorInputWrapper]}>
         {!!LeftAccessory && (
           <LeftAccessory
             style={styles.accessory}
@@ -115,12 +117,13 @@ export const TextField = forwardRef(function TextField(
         )}
       </View>
 
-      {!!helper && (
+      {(!!helper || !!error) && (
         <Typography
           variant="formHelper"
-          text={helper}
+          size="xs"
+          text={helper || error}
           {...HelperTextProps}
-          style={styles.helperText}
+          style={[styles.helperText, error && { color: colors.angry500 }]}
         />
       )}
     </TouchableOpacity>
@@ -134,6 +137,7 @@ const styles: {
   accessory: StyleProp<ViewStyle>;
   input: StyleProp<TextStyle>;
   helperText: StyleProp<TextStyle>;
+  errorInputWrapper: StyleProp<ViewStyle>;
 } = {
   container: {},
   label: {
@@ -147,6 +151,10 @@ const styles: {
     backgroundColor: colors.neutral200,
     borderColor: colors.neutral400,
     overflow: 'hidden',
+  },
+  errorInputWrapper: {
+    backgroundColor: colors.angry100,
+    borderColor: colors.angry500,
   },
   accessory: {
     marginHorizontal: spacing.xs,
