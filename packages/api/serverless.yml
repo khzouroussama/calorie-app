@@ -17,9 +17,9 @@ provider:
   region: ${env:REGION}
   stage: ${opt:stage, 'dev'}
   environment:
-    DYNAMODB_TABLE: ${self:service}-${env:STAGE}
+    DYNAMODB_TABLE: ${self:service}-${self:provider.stage}
     JWT_SECRET: ${env:JWT_SECRET}
-    STAGE: ${self.provider.stage}
+    STAGE: ${self:provider.stage}
 
   httpApi:
     cors: true
@@ -35,14 +35,42 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource: 'arn:aws:dynamodb:${aws:region}:*:table/${self:provider.environment.DYNAMODB_TABLE}'
+        - Effect: 'Allow'
+          Action:
+            - 'cognito-idp:AdminAddUserToGroup'
+          Resource:
+            - Fn::GetAtt: [CalorieAppUserPool, Arn]
 
 functions:
+  sign-up:
+    handler: src/auth/sign-up/sign-up-handler.main
+    events:
+      - cognitoUserPool:
+          pool: calorie-app-user-pool-${self:provider.stage}
+          trigger: PostConfirmation
+          existing: true
+
   create-food-entry:
-    handler: src/food-entry/create-food-entry-handler.main
+    handler: src/food-entry/create-food-entry/create-food-entry-handler.main
     events:
       - http:
-          path: /food-entry
+          path: /v1/food-entries
+          method: post
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CalorieAppApiGatewayAuthorizer
+
+  get-food-entries:
+    handler: src/food-entry/get-food-entries/get-food-entries-handler.main
+    events:
+      - http:
+          path: /v1/food-entries
           method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CalorieAppApiGatewayAuthorizer
 
 custom:
   esbuild:
@@ -51,6 +79,10 @@ custom:
     sourcemap: true
     target: 'node14'
     packager: yarn
+    external:
+      - '@aws-sdk/client-cognito-identity-provider'
+      - '@aws-sdk/util-dynamodb'
+      - yup
 
 resources:
   Resources:
@@ -59,10 +91,89 @@ resources:
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          - AttributeName: id
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: S
+          - AttributeName: GSI1PK
+            AttributeType: S
+          - AttributeName: GSI1SK
             AttributeType: S
         KeySchema:
-          - AttributeName: id
+          - AttributeName: PK
             KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: GSI1
+            KeySchema:
+              - AttributeName: GSI1PK
+                KeyType: HASH
+              - AttributeName: GSI1SK
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+
+    CalorieAppUserPool:
+      Type: 'AWS::Cognito::UserPool'
+      Properties:
+        UserPoolName: 'calorie-app-user-pool-${self:provider.stage}'
+        UsernameAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+        Schema:
+          - AttributeDataType: String
+            Name: email
+            Required: true
+            Mutable: true
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+            RequireUppercase: true
+            RequireNumbers: true
+            RequireSymbols: true
+
+    CalorieAppUserPoolClient:
+      Type: 'AWS::Cognito::UserPoolClient'
+      Properties:
+        ClientName: 'calorie-app-user-pool-client-${self:provider.stage}'
+        UserPoolId:
+          Ref: CalorieAppUserPool
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH
+        GenerateSecret: false # Set to true if you're building a web application
+        RefreshTokenValidity: 30 # Duration in days
+
+    AdminGroup:
+      Type: 'AWS::Cognito::UserPoolGroup'
+      Properties:
+        GroupName: 'admin-${self:provider.stage}'
+        Description: 'Admin Group for ${self:provider.stage}'
+        UserPoolId:
+          Ref: CalorieAppUserPool
+        Precedence: 1
+
+    UserGroup:
+      Type: 'AWS::Cognito::UserPoolGroup'
+      Properties:
+        GroupName: 'user-${self:provider.stage}'
+        Description: 'User Group for ${self:provider.stage}'
+        UserPoolId:
+          Ref: CalorieAppUserPool
+        Precedence: 2
+
+    CalorieAppApiGatewayAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: calorieAppAuthorizer-${self:provider.stage}
+        IdentitySource: method.request.header.Authorization
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Type: COGNITO_USER_POOLS
+        ProviderARNs:
+          - Fn::GetAtt:
+              - CalorieAppUserPool
+              - Arn

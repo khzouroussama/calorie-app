@@ -1,118 +1,161 @@
-import { getClient } from './client';
+import {
+  PutItemCommand,
+  UpdateItemCommand,
+  DeleteItemCommand,
+  QueryCommand,
+  GetItemCommand,
+} from '@aws-sdk/client-dynamodb';
+
 import { Item } from './item';
 import { ItemKeys } from './itemKeys';
-import { DynamoDB } from 'aws-sdk';
 import { dbErrorLogger } from './errors';
 import { DYNAMODB_TABLE_NAME } from './constants';
 
+import { getClient } from './client';
+
 export async function createItem<T extends Item<any>>(
   item: T,
-  options?: Omit<DynamoDB.PutItemInput, 'TableName'>,
+  options?: Omit<PutItemCommand['input'], 'TableName'>,
 ) {
   const db = getClient();
 
   try {
-    return await db
-      .putItem({
+    return await db.send(
+      new PutItemCommand({
         TableName: DYNAMODB_TABLE_NAME,
         Item: item.toItem(),
         ConditionExpression: 'attribute_not_exists(SK)',
         ...options,
-      })
-      .promise();
+      }),
+    );
   } catch (e) {
     dbErrorLogger(e);
-
-    throw {
-      success: false,
-    };
+    throw { success: false };
   }
 }
 
 export async function updateItem(
   keys: ItemKeys,
-  options?: Omit<DynamoDB.UpdateItemInput, 'TableName' | 'Key'>,
+  options?: Omit<UpdateItemCommand['input'], 'TableName' | 'Key'>,
 ) {
   const db = getClient();
 
   try {
-    return await db
-      .updateItem({
+    return await db.send(
+      new UpdateItemCommand({
         TableName: DYNAMODB_TABLE_NAME,
         Key: keys.toItem(),
         ...options,
-      })
-      .promise();
+      }),
+    );
   } catch (e) {
     dbErrorLogger(e);
-
-    throw {
-      success: false,
-    };
+    throw { success: false };
   }
 }
 
 export async function deleteItem(
   keys: ItemKeys,
-  options?: Omit<DynamoDB.DeleteItemInput, 'TableName'>,
+  options?: Omit<DeleteItemCommand['input'], 'TableName'>,
 ) {
   const db = getClient();
 
   try {
-    await db
-      .deleteItem({
+    return await db.send(
+      new DeleteItemCommand({
         TableName: DYNAMODB_TABLE_NAME,
         Key: keys.toItem(),
         ...options,
-      })
-      .promise();
+      }),
+    );
   } catch (e) {
     dbErrorLogger(e);
-
-    throw {
-      success: false,
-    };
+    throw { success: false };
   }
 }
 
-export async function query(options: Omit<DynamoDB.QueryInput, 'TableName'>) {
+export async function query(options: Omit<QueryCommand['input'], 'TableName'>) {
   const db = getClient();
 
   try {
-    return await db
-      .query({
+    return await db.send(
+      new QueryCommand({
         TableName: DYNAMODB_TABLE_NAME,
         ...options,
-      })
-      .promise();
+      }),
+    );
   } catch (e) {
     dbErrorLogger(e);
-
-    throw {
-      success: false,
-    };
+    throw { success: false };
   }
 }
 
 export async function getItem(
   keys: ItemKeys,
-  options?: Omit<DynamoDB.GetItemInput, 'TableName'>,
+  options?: Omit<GetItemCommand['input'], 'TableName'>,
 ) {
   const db = getClient();
 
   try {
-    return await db
-      .getItem({
+    return await db.send(
+      new GetItemCommand({
         TableName: DYNAMODB_TABLE_NAME,
         Key: keys.toItem(),
         ...options,
-      })
-      .promise();
+      }),
+    );
   } catch (e) {
     dbErrorLogger(e);
+    throw { success: false };
+  }
+}
 
-    throw {
-      success: false,
-    };
+export function buildDynamicUpdateParams<T extends Item<any>>(
+  item: T,
+  options?: Omit<UpdateItemCommand['input'], 'TableName' | 'Key'>,
+) {
+  const allDbKeys = Object.keys(item.keys.toItem());
+
+  const itemKeys = Object.keys(item.toItem()).filter(
+    (k) => !allDbKeys.includes(k),
+  );
+
+  return {
+    TableName: DYNAMODB_TABLE_NAME,
+    Key: item.keys.toItem(),
+    ReturnValues: 'ALL_NEW',
+    UpdateExpression: `SET ${itemKeys
+      .map((k, index) => `#field${index} = :value${index}`)
+      .join(', ')} ${options?.UpdateExpression}`,
+    ExpressionAttributeNames: itemKeys.reduce(
+      (accumulator, k, index) => ({
+        ...accumulator,
+        [`#field${index}`]: k,
+      }),
+      options?.ExpressionAttributeNames,
+    ),
+    ExpressionAttributeValues: itemKeys.reduce(
+      (accumulator, k, index) => ({
+        ...accumulator,
+        [`:value${index}`]: item.toItem()[k],
+      }),
+      options?.ExpressionAttributeValues,
+    ),
+  } as const;
+}
+
+export async function updateOrReplaceItem<T extends Item<any>>(
+  item: T,
+  options?: Omit<GetItemCommand['input'], 'TableName'>,
+) {
+  const db = getClient();
+
+  try {
+    return await db.send(
+      new UpdateItemCommand(buildDynamicUpdateParams(item, options as any)),
+    ); // Cast as any to circumvent type checking for the purpose of the example
+  } catch (e) {
+    dbErrorLogger(e);
+    throw { success: false };
   }
 }

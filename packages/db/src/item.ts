@@ -1,11 +1,14 @@
-import { DynamoDB } from 'aws-sdk';
 import {
   marshall,
   unmarshall,
   marshallOptions,
   unmarshallOptions,
 } from '@aws-sdk/util-dynamodb';
+
+import { AttributeValue } from '@aws-sdk/client-dynamodb';
 import { ItemKeys } from './itemKeys';
+
+export type DynamoAttributeValue = ReturnType<typeof marshall>;
 
 export interface BaseModel {
   PK: string;
@@ -16,10 +19,10 @@ export interface BaseModel {
 
 export abstract class Item<T extends Record<string, any>> {
   abstract get keys(): ItemKeys;
-  abstract toItem(): DynamoDB.AttributeMap;
+  abstract toItem(): Record<string, AttributeValue>;
 
   static fromItem(
-    attributeMap: DynamoDB.AttributeMap,
+    attributeMap: Record<string, AttributeValue>,
     options?: unmarshallOptions,
   ) {
     return unmarshall(attributeMap, options);
@@ -33,10 +36,7 @@ export abstract class Item<T extends Record<string, any>> {
     };
   }
 
-  marshall(
-    model: Omit<T, keyof BaseModel>,
-    options?: marshallOptions,
-  ): DynamoDB.AttributeMap {
+  marshall(model: Omit<T, keyof BaseModel>, options?: marshallOptions) {
     return marshall(
       { ...model, ...this.withKeys() },
       { removeUndefinedValues: true, convertEmptyValues: true, ...options },
@@ -44,7 +44,7 @@ export abstract class Item<T extends Record<string, any>> {
   }
 
   unmarshall(
-    attributeMap: DynamoDB.AttributeMap,
+    attributeMap: Record<string, AttributeValue>,
     options?: unmarshallOptions,
   ): T {
     return unmarshall(attributeMap, options) as T;

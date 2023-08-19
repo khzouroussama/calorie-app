@@ -1,0 +1,23 @@
+{
+  "authSelections": "userPoolOnly",
+  "resourceName": "calorieappccb652b3",
+  "serviceType": "imported",
+  "region": "eu-west-1",
+  "usernameAttributes": [
+    "email"
+  ],
+  "requiredAttributes": [
+    "email"
+  ],
+  "passwordPolicyMinLength": 8,
+  "passwordPolicyCharacters": [
+    "Requires Uppercase",
+    "Requires Numbers",
+    "Requires Symbols"
+  ],
+  "mfaConfiguration": "OFF",
+  "autoVerifiedAttributes": [
+    "email"
+  ],
+  "mfaTypes": []
+}

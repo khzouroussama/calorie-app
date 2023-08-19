@@ -1,0 +1,45 @@
+{
+  "auth": {
+    "calorieappccb652b3": {
+      "customAuth": false,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito",
+      "serviceType": "imported"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_auth_calorieappccb652b3_nativeClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "calorieappccb652b3"
+        }
+      ]
+    },
+    "AMPLIFY_auth_calorieappccb652b3_userPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "calorieappccb652b3"
+        }
+      ]
+    },
+    "AMPLIFY_auth_calorieappccb652b3_userPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "calorieappccb652b3"
+        }
+      ]
+    },
+    "AMPLIFY_auth_calorieappccb652b3_webClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "calorieappccb652b3"
+        }
+      ]
+    }
+  }
+}
