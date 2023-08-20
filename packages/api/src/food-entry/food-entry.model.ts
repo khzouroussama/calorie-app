@@ -14,7 +14,7 @@ import {
   GlobalEntryCount,
   UserCalorieCount,
 } from '@/reporting/aggregation.model';
-import { paginateParams } from '@calorie-app/http';
+import { encodeCursor, paginateParams } from '@calorie-app/http';
 
 export interface FoodEntryModel {
   /**  ISO string of the date of when the food entry was created */
@@ -193,29 +193,27 @@ export const getFoodEntries = async (
     dateTo?: string;
   },
 ) => {
-  const params = {
-    KeyConditionExpression: [
-      '#pk = :pk',
-      ':sk <= #sk',
-      filters?.dateFrom && ':sk >= :dateFrom',
-      filters?.dateTo && ':sk <= :dateTo',
-    ]
-      .filter(Boolean)
-      .join(' AND '),
+  const defaultFromDate = new Date(0, 0, 1).toISOString();
+  const defaultToDate = new Date().toISOString();
+
+  const params: Parameters<typeof query>[0] = {
+    KeyConditionExpression: '#pk = :pk AND #sk BETWEEN :dateFrom AND :dateTo',
     ExpressionAttributeNames: {
       '#pk': 'PK',
       '#sk': 'SK',
     },
     ExpressionAttributeValues: {
       ':pk': { S: userKeys.pk },
-      ':sk': { S: FoodEntryKeys.ENTITY_TYPE },
-      ...(filters?.dateFrom && {
-        ':dateFrom': { S: `${FoodEntryKeys.ENTITY_TYPE}#${filters.dateFrom}` },
-      }),
-      ...(filters?.dateTo && {
-        ':dateTo': { S: `${FoodEntryKeys.ENTITY_TYPE}#${filters.dateTo}` },
-      }),
+      ':dateFrom': {
+        S: `${FoodEntryKeys.ENTITY_TYPE}#${
+          filters?.dateFrom || defaultFromDate
+        }`,
+      },
+      ':dateTo': {
+        S: `${FoodEntryKeys.ENTITY_TYPE}#${filters?.dateTo || defaultToDate}`,
+      },
     },
+    ScanIndexForward: false,
   };
 
   const result = await query({
@@ -225,6 +223,8 @@ export const getFoodEntries = async (
 
   return {
     foodEntries: result.Items?.map((item) => FoodEntry.fromItem(item)),
-    nextCursor: result.LastEvaluatedKey,
+    nextCursor: result.LastEvaluatedKey
+      ? encodeCursor(result.LastEvaluatedKey)
+      : null,
   };
 };

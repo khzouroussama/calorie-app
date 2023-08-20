@@ -17,7 +17,7 @@ export const paginateParams = (cursor?: string, limit?: number) => {
   }
 
   if (limit) {
-    params.Limit = limit;
+    params.Limit = +limit;
   }
 
   return params;
