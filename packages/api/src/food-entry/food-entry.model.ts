@@ -99,19 +99,6 @@ export const createFoodEntry = async (
     date: creationDate.split('T')[0],
   });
 
-  console.log(
-    JSON.stringify({
-      t: food,
-      item: food.toItem(),
-      globalEntryCountkeystoitem: globalEntryCount.keys.toItem(),
-      globalEntryCount: globalEntryCount,
-      globalEntryCountToItem: globalEntryCount.toItem(),
-      userCalorieCount,
-      userCalorieCountToItem: userCalorieCount.toItem(),
-      userCalorieCountkeys: userCalorieCount.keys.toItem(),
-    }),
-  );
-
   await executeTransactWrite({
     client,
     params: {
@@ -201,9 +188,20 @@ export const getFoodEntries = async (
   userKeys: UserKeys,
   cursor?: string,
   limit?: number,
+  filters?: {
+    dateFrom?: string;
+    dateTo?: string;
+  },
 ) => {
   const params = {
-    KeyConditionExpression: '#pk = :pk AND begins_with(#sk, :sk)',
+    KeyConditionExpression: [
+      '#pk = :pk',
+      ':sk <= #sk',
+      filters?.dateFrom && ':sk >= :dateFrom',
+      filters?.dateTo && ':sk <= :dateTo',
+    ]
+      .filter(Boolean)
+      .join(' AND '),
     ExpressionAttributeNames: {
       '#pk': 'PK',
       '#sk': 'SK',
@@ -211,6 +209,12 @@ export const getFoodEntries = async (
     ExpressionAttributeValues: {
       ':pk': { S: userKeys.pk },
       ':sk': { S: FoodEntryKeys.ENTITY_TYPE },
+      ...(filters?.dateFrom && {
+        ':dateFrom': { S: `${FoodEntryKeys.ENTITY_TYPE}#${filters.dateFrom}` },
+      }),
+      ...(filters?.dateTo && {
+        ':dateTo': { S: `${FoodEntryKeys.ENTITY_TYPE}#${filters.dateTo}` },
+      }),
     },
   };
 
