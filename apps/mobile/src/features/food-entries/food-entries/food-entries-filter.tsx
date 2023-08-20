@@ -19,14 +19,16 @@ const schema = yup.object({
 export const FoodEntriesFilter = () => {
   const { onUserFoodEntryFilterChange } = useStoreActions();
 
-  const { control, reset, watch, handleSubmit } = useForm({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      dateFrom: new Date(),
-      dateTo: new Date(),
+  const { control, reset, watch, handleSubmit } = useForm<AddFoodEntryFormData>(
+    {
+      resolver: yupResolver(schema),
+      defaultValues: {
+        dateFrom: new Date(),
+        dateTo: new Date(),
+      },
+      mode: 'onChange',
     },
-    mode: 'onChange',
-  });
+  );
 
   useEffect(() => {
     onUserFoodEntryFilterChange('dateFrom', watch('dateFrom'));

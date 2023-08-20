@@ -62,7 +62,7 @@ function Button(
     >
       {loading && <ActivityIndicator size={10} />}
       {Icon && !loading && (
-        <Icon color={colors[color]} size={iconSize} strokeWidth={1.5} />
+        <Icon color={colors[color]} size={iconSize} strokeWidth={2} />
       )}
       {(Icon || loading) && <Box sx={{ width: spacing.sm }} />}
       {(!!title || !!props.children) && (
@@ -131,7 +131,7 @@ const getButtonStyles = (
     } as const;
   }
 
-  const styles = {
+  const variantStyles = {
     primary: {
       backgroundColor: 'primary500',
       color: 'neutral100',
@@ -170,7 +170,7 @@ const getButtonStyles = (
     },
   } as const;
 
-  return styles[variant];
+  return variantStyles[variant];
 };
 
 export default React.memo(React.forwardRef(Button));

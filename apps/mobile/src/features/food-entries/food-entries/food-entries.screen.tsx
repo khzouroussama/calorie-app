@@ -7,6 +7,7 @@ import { colors, spacing } from '@/design-system/theme';
 import { useNavigation } from '@react-navigation/native';
 import type { FoodEntry } from '../food-entries.types';
 import { FoodEntriesFilter } from './food-entries-filter';
+import { FoodEntriesHeader } from './food-entries-header.component';
 
 export const FoodEntriesScreen = () => {
   const navigation = useNavigation();
@@ -20,11 +21,15 @@ export const FoodEntriesScreen = () => {
   return (
     <Screen>
       <Box
-        sx={{ row: true, my: 'lg', px: 'md', alignItems: 'center', gap: 'sm' }}
+        sx={{
+          my: 'sm',
+          px: 'md',
+          gap: 'sm',
+        }}
       >
+        <FoodEntriesHeader />
         <FoodEntriesFilter />
       </Box>
-
       {status === 'loading' ? (
         <Box sx={{ flex: 1 }}>
           <ActivityIndicator />
