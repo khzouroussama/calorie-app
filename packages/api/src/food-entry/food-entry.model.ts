@@ -14,6 +14,7 @@ import {
   GlobalEntryCount,
   UserCalorieCount,
 } from '@/reporting/aggregation.model';
+import { paginateParams } from '@calorie-app/http';
 
 export interface FoodEntryModel {
   /**  ISO string of the date of when the food entry was created */
@@ -196,8 +197,12 @@ export const updateFoodEntry = async (
   return { success: true };
 };
 
-export const getFoodEntries = async (userKeys: UserKeys) => {
-  const result = await query({
+export const getFoodEntries = async (
+  userKeys: UserKeys,
+  cursor?: string,
+  limit?: number,
+) => {
+  const params = {
     KeyConditionExpression: '#pk = :pk AND begins_with(#sk, :sk)',
     ExpressionAttributeNames: {
       '#pk': 'PK',
@@ -207,9 +212,15 @@ export const getFoodEntries = async (userKeys: UserKeys) => {
       ':pk': { S: userKeys.pk },
       ':sk': { S: FoodEntryKeys.ENTITY_TYPE },
     },
+  };
+
+  const result = await query({
+    ...params,
+    ...paginateParams(cursor, limit),
   });
 
-  console.log({ result: result });
-
-  return result.Items?.map((item) => FoodEntry.fromItem(item));
+  return {
+    foodEntries: result.Items?.map((item) => FoodEntry.fromItem(item)),
+    nextCursor: result.LastEvaluatedKey,
+  };
 };
