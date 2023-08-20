@@ -1,21 +1,40 @@
 import axios from 'axios';
 import { useStore } from '@/shared/store';
 import type { AxiosError } from 'axios';
-import { createQuery } from 'react-query-kit';
+import { createInfiniteQuery, createQuery } from 'react-query-kit';
 import { FoodEntry } from '../food-entries.types';
+import { stringifyQueryParams } from '@/shared/service/api';
 
-type Response = FoodEntry[];
+type Response = {
+  data: {
+    data: {
+      foodEntries: FoodEntry[];
+      nextCursor: string;
+    };
+  };
+};
 type Variables = { dateFrom: string; dateTo: string };
 
-export const useFoodEntries = createQuery<Response, Variables, AxiosError>({
+export const useFoodEntries = createInfiniteQuery<
+  Response,
+  Variables,
+  AxiosError
+>({
   primaryKey: 'food-entries',
-  queryFn: async ({ queryKey: [primaryKey, { dateFrom, dateTo }] }) => {
-    const response = await axios.get(
-      `${primaryKey}?dateFrom=${dateFrom}&dateTo=${dateTo}`,
+  queryFn: async ({
+    queryKey: [primaryKey, { dateFrom, dateTo }],
+    pageParam,
+  }) => {
+    return axios.get(
+      `${primaryKey}?${stringifyQueryParams({
+        dateFrom,
+        dateTo,
+        limit: 10,
+        cursor: pageParam,
+      })}`,
     );
-
-    return response.data?.data?.foodEntries ?? [];
   },
+  getNextPageParam: (lastPage) => lastPage.data.data.nextCursor,
   useDefaultOptions() {
     const dateFrom = useStore((state) => state.foodEntries.filters.dateFrom);
     const dateTo = useStore((state) => state.foodEntries.filters.dateTo);

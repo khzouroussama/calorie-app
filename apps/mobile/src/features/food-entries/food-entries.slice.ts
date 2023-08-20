@@ -20,7 +20,7 @@ const createFoodEntriesSlice: StateCreator<
   foodEntries: {
     filters: {
       dateFrom: null,
-      dateTo: null,
+      dateTo: new Date(),
     },
   },
 });

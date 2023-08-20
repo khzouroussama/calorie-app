@@ -60,7 +60,7 @@ function Button(
         bgColor: backgroundColor,
       }}
     >
-      {loading && <ActivityIndicator size={10} />}
+      {loading && <ActivityIndicator color={colors.neutral100} size={10} />}
       {Icon && !loading && (
         <Icon color={colors[color]} size={iconSize} strokeWidth={2} />
       )}

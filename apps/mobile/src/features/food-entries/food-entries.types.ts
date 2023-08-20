@@ -4,6 +4,6 @@ export interface FoodEntry {
   name: string;
   calories: number;
   photoUrl?: string;
-  consumptionDate?: Date;
+  consumptionDate?: string;
   createdAt?: string;
 }

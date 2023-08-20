@@ -1,63 +1,39 @@
-import { Box, Button, Form, Icons } from '@/design-system';
+import { Box, Button, DateTimeField, Icons } from '@/design-system';
 
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import { useStore, useStoreActions } from '@/shared/store';
-import { useEffect } from 'react';
-
-export type AddFoodEntryFormData = {
-  dateFrom: Date;
-  dateTo: Date;
-};
-
-const schema = yup.object({
-  dateFrom: yup.date().required(),
-  dateTo: yup.date().required(),
-});
+import { curry } from 'ramda';
 
 export const FoodEntriesFilter = () => {
-  const { onUserFoodEntryFilterChange } = useStoreActions();
-
-  const { control, reset, watch, handleSubmit } = useForm<AddFoodEntryFormData>(
-    {
-      resolver: yupResolver(schema),
-      defaultValues: {
-        dateFrom: new Date(),
-        dateTo: new Date(),
-      },
-      mode: 'onChange',
-    },
-  );
-
-  useEffect(() => {
-    onUserFoodEntryFilterChange('dateFrom', watch('dateFrom'));
-  }, [onUserFoodEntryFilterChange, watch]);
-
-  useEffect(() => {
-    onUserFoodEntryFilterChange('dateTo', watch('dateTo'));
-  }, [onUserFoodEntryFilterChange, watch]);
+  const { dateFrom, dateTo } = useStore((state) => state.foodEntries.filters);
+  const { onUserFoodEntryFilterChange, onUserFoodEntryFilterReset } =
+    useStoreActions();
 
   return (
     <Box sx={{ row: true, gap: 'sm' }}>
       <Box sx={{ flex: 1 }}>
-        <Form.DateTimeField
-          name="dateFrom"
+        <DateTimeField
           label={null}
-          control={control}
+          value={dateFrom}
+          placeholder="from"
           mode="datetime"
+          onChange={curry(onUserFoodEntryFilterChange)('dateFrom')}
         />
       </Box>
       <Box sx={{ flex: 1 }}>
-        <Form.DateTimeField
-          name="dateTo"
+        <DateTimeField
           label={null}
-          control={control}
+          placeholder="To"
+          value={dateTo}
           mode="datetime"
+          onChange={curry(onUserFoodEntryFilterChange)('dateTo')}
         />
       </Box>
       <Box>
-        <Button variant="white" icon={Icons.Ban}>
+        <Button
+          variant="white"
+          icon={Icons.Ban}
+          onPress={onUserFoodEntryFilterReset}
+        >
           Clear
         </Button>
       </Box>
