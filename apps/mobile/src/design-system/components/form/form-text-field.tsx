@@ -13,12 +13,14 @@ export function FormTextField(props: FormTextFieldProps) {
   const { name, control, rules, ...inputProps } = props;
 
   const { field, fieldState } = useController({ control, name, rules });
+
+  console.log({ field });
   return (
     <TextField
       ref={field.ref}
       autoCapitalize="none"
       onChangeText={field.onChange}
-      value={field.value}
+      value={String(field.value)}
       {...inputProps}
       error={fieldState.error?.message}
     />

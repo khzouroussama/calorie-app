@@ -8,7 +8,14 @@ import { FoodEntryFormData } from '../food-entry-form.component';
 type Variables = FoodEntryFormData;
 type Response = FoodEntry;
 
-export const useAddFoodEntry = createMutation<Response, Variables, AxiosError>({
-  mutationFn: async (variables) =>
-    axios.post('food-entries', variables).then((response) => response.data),
-});
+export const useEditFoodEntry = createMutation<Response, Variables, AxiosError>(
+  {
+    mutationFn: async (variables) =>
+      axios
+        .put(
+          `food-entries/${variables.consumptionDate.toISOString()}`,
+          variables,
+        )
+        .then((response) => response.data),
+  },
+);

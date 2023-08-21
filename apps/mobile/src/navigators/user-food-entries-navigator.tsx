@@ -1,6 +1,11 @@
 import { Icons, Pressable } from '@/design-system';
 import { typography } from '@/design-system/theme';
-import { AddFoodEntryScreen, FoodEntriesScreen } from '@/features/food-entries';
+import {
+  AddFoodEntryScreen,
+  EditFoodEntryScreen,
+  FoodEntriesScreen,
+} from '@/features/food-entries';
+import { FoodEntryFormData } from '@/features/food-entries/food-entry-form.componenet';
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
@@ -8,7 +13,7 @@ import * as React from 'react';
 export type UserFoodEntriesParamList = {
   UserFoodEntriesList: undefined;
   UserAddFoodEntry: undefined;
-  UserEditFoodEntry: undefined;
+  UserEditFoodEntry: FoodEntryFormData;
 };
 
 const Stack = createNativeStackNavigator<UserFoodEntriesParamList>();
@@ -55,9 +60,9 @@ export const UsersFoodEntriesNavigator = () => {
         />
         <Stack.Screen
           name="UserEditFoodEntry"
-          component={AddFoodEntryScreen}
+          component={EditFoodEntryScreen}
           options={{
-            title: 'Add new Food entry',
+            title: 'Edit Food entry',
             presentation: 'modal',
           }}
         />

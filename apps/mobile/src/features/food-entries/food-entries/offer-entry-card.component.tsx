@@ -18,7 +18,11 @@ export const FoodEntryCard = ({ foodEntry }: FoodEntryCardProps) => {
       <Pressable
         activeScale={0.98}
         onPress={() => {
-          navigation.navigate('UserEditFoodEntry');
+          navigation.navigate('UserEditFoodEntry', {
+            name,
+            calories,
+            consumptionDate,
+          });
         }}
       >
         <Card

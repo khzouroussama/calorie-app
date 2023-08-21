@@ -7,12 +7,8 @@ type FormDateTimeFieldProps = {
   name: string;
   control?: Control<any>;
   rules?: Omit<RegisterOptions, 'valueAsNumber' | 'valueAsDate' | 'setValueAs'>;
-  min?: Date;
-  max?: Date;
-  mode?: 'date' | 'time' | 'datetime';
-  label?: string;
-  onChange?: (date: Date) => void;
-} & DateTimeFieldProps;
+  value?: Date;
+} & Omit<DateTimeFieldProps, 'value'>;
 
 export function FormDateTimeField(props: FormDateTimeFieldProps) {
   const { name, control, rules, onChange, ...inputProps } = props;
@@ -27,6 +23,7 @@ export function FormDateTimeField(props: FormDateTimeFieldProps) {
       max={props.max}
       mode={props.mode}
       onChange={field.onChange}
+      {...inputProps}
     />
   );
 }
