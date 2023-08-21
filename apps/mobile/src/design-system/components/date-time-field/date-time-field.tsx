@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 
-import { TextField, TextFieldProps } from '../text-field';
+import { TextField } from '../text-field';
 import { Box } from '../box';
 
 import DateTimePickerModal from 'react-native-modal-datetime-picker';

@@ -1,12 +1,13 @@
-import { Animated as RNAnimated } from 'react-native';
+import { ActivityIndicator, Animated as RNAnimated } from 'react-native';
 import { Box, Card, Icons, Pressable, Typography } from '@/design-system';
-import { FoodEntry } from '../food-entries.types';
 import { formatRelative } from 'date-fns';
 import { colors } from '@/design-system/theme';
 import { useNavigation } from '@react-navigation/native';
 import Animated, { Layout } from 'react-native-reanimated';
 import { Swipeable } from 'react-native-gesture-handler';
 import { useCallback } from 'react';
+import { useDeleteFoodEntry } from './use-delete-food-entry';
+import { FoodEntry } from '../../food-entries.types';
 
 type FoodEntryCardProps = {
   foodEntry: FoodEntry;
@@ -14,7 +15,12 @@ type FoodEntryCardProps = {
 
 export const FoodEntryCard = ({ foodEntry }: FoodEntryCardProps) => {
   const navigation = useNavigation();
-  const { name, calories, consumptionDate, photoUrl } = foodEntry;
+  const { name, calories, consumptionDate } = foodEntry;
+  const { mutate: deleteFoodEntry, isLoading } = useDeleteFoodEntry();
+
+  const handleDeleteFoodEntry = useCallback(() => {
+    deleteFoodEntry({ id: consumptionDate });
+  }, [consumptionDate, deleteFoodEntry]);
 
   const renderRightActions = useCallback(
     (progress: RNAnimated.AnimatedInterpolation<number>) => {
@@ -27,9 +33,10 @@ export const FoodEntryCard = ({ foodEntry }: FoodEntryCardProps) => {
         inputRange: [0, 1],
         outputRange: [0, 1],
       });
+
       return (
         <RNAnimated.View style={{ opacity, transform: [{ translateX }] }}>
-          <Pressable>
+          <Pressable onPress={handleDeleteFoodEntry}>
             <Box
               sx={{
                 mr: 'md',
@@ -41,13 +48,17 @@ export const FoodEntryCard = ({ foodEntry }: FoodEntryCardProps) => {
                 justifyContent: 'center',
               }}
             >
-              <Icons.Trashtabler color={colors.angry500} size={28} />
+              {isLoading ? (
+                <ActivityIndicator color={colors.angry500} size={28} />
+              ) : (
+                <Icons.Trashtabler color={colors.angry500} size={28} />
+              )}
             </Box>
           </Pressable>
         </RNAnimated.View>
       );
     },
-    [],
+    [handleDeleteFoodEntry, isLoading],
   );
 
   return (
@@ -57,6 +68,7 @@ export const FoodEntryCard = ({ foodEntry }: FoodEntryCardProps) => {
           activeScale={0.98}
           onPress={() => {
             navigation.navigate('UserEditFoodEntry', {
+              id: new Date(consumptionDate).toISOString(),
               name,
               calories,
               consumptionDate,

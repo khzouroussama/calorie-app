@@ -13,6 +13,7 @@ import { FoodEntry } from './food-entries.types';
 import { AxiosError } from 'axios';
 
 export type FoodEntryFormData = {
+  id?: string;
   name: string;
   calories: number;
   consumptionDate: Date;

@@ -153,17 +153,28 @@ export const updateFoodEntry = async (
 ) => {
   const client = getClient();
 
-  const food = new FoodEntry(userId, {
+  const oldFood = new FoodEntry(userId, {
+    ...foodEntry,
+    consumptionDate: foodEntry.id as string,
+  });
+
+  const newFood = new FoodEntry(userId, {
     ...foodEntry,
     updatedAt: new Date().toISOString(),
   });
 
-  const oldFoodEntry = await getItem(food.keys);
-  const oldCalories = FoodEntry.fromItem(oldFoodEntry.Item ?? {})?.calories;
+  const oldFoodEntryResult = await getItem(oldFood.keys);
+  const oldFoodEntry = FoodEntry.fromItem(oldFoodEntryResult.Item ?? {});
 
   const userCalorieCount = new UserCalorieCount({
     userId,
     date: foodEntry.consumptionDate!.split('T')[0],
+  });
+
+  console.log({
+    d: oldFoodEntry,
+    oldFoodEntryResult,
+    foodEntrys: foodEntry.consumptionDate,
   });
 
   await executeTransactWrite({
@@ -173,7 +184,7 @@ export const updateFoodEntry = async (
         {
           Put: {
             TableName: DYNAMODB_TABLE_NAME,
-            Item: food.toItem(),
+            Item: newFood.toItem(),
           },
         },
         {
@@ -184,7 +195,9 @@ export const updateFoodEntry = async (
                 '#totalOfCalories': 'totalOfCalories',
               },
               ExpressionAttributeValues: {
-                ':total': { N: `${-oldCalories + foodEntry.calories}` },
+                ':total': {
+                  N: `${-oldFoodEntry.calories + foodEntry.calories}`,
+                },
               },
             }),
           },
@@ -194,12 +207,71 @@ export const updateFoodEntry = async (
   });
 
   if (
-    oldFoodEntry.Item &&
-    foodEntry.consumptionDate !== oldFoodEntry?.Item?.consumptionDate.S
+    oldFoodEntry &&
+    foodEntry.consumptionDate !== oldFoodEntry?.consumptionDate
   ) {
     console.log(JSON.stringify({ oldFoodEntry }));
-    await deleteItem(food.keys);
+    await deleteItem(oldFood.keys);
   }
+
+  return { success: true };
+};
+
+export const deleteFoodEntry = async (
+  userId: string,
+  foodEntryKeys: FoodEntryKeys,
+) => {
+  const client = getClient();
+
+  const oldFoodEntry = await getItem(foodEntryKeys);
+  const foodEntryItem = FoodEntry.fromItem(oldFoodEntry.Item ?? {});
+
+  const globalEntryCount = new GlobalEntryCount({
+    date: foodEntryItem.consumptionDate.split('T')[0],
+  });
+
+  const userCalorieCount = new UserCalorieCount({
+    userId,
+    date: foodEntryItem.consumptionDate.split('T')[0],
+  });
+
+  await executeTransactWrite({
+    client,
+    params: {
+      TransactItems: [
+        {
+          Delete: {
+            TableName: DYNAMODB_TABLE_NAME,
+            Key: foodEntryKeys.toItem(),
+          },
+        },
+        {
+          Update: {
+            ...buildDynamicUpdateParams(userCalorieCount, {
+              UpdateExpression: 'ADD #totalOfCalories :total',
+              ExpressionAttributeNames: {
+                '#totalOfCalories': 'totalOfCalories',
+              },
+              ExpressionAttributeValues: {
+                ':total': { N: `${-foodEntryItem.calories}` },
+              },
+            }),
+          },
+        },
+        {
+          Update: {
+            ...buildDynamicUpdateParams(globalEntryCount, {
+              UpdateExpression: 'ADD #totalEntries :one',
+              ExpressionAttributeNames: { '#totalEntries': 'count' },
+              ExpressionAttributeValues: {
+                ':one': { N: '-1' },
+              },
+            }),
+          },
+        },
+      ],
+    },
+  });
 
   return { success: true };
 };

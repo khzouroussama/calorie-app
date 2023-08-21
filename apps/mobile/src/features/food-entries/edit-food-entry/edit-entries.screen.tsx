@@ -11,10 +11,6 @@ export const EditFoodEntryScreen = () => {
   const { bottom } = useSafeAreaInsets();
   const { params } = useRoute<RouteProp<'UserEditFoodEntry'>>();
 
-  console.log({
-    params,
-  });
-
   return (
     <Screen style={{ paddingBottom: bottom }}>
       <FoodEntryForm

@@ -72,6 +72,17 @@ functions:
             authorizerId:
               Ref: CalorieAppApiGatewayAuthorizer
 
+  delete-food-entry:
+    handler: src/food-entry/delete-food-entry/delete-food-entry-handler.main
+    events:
+      - http:
+          path: /v1/food-entries/{id}
+          method: delete
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CalorieAppApiGatewayAuthorizer
+
   get-food-entries:
     handler: src/food-entry/get-food-entries/get-food-entries-handler.main
     events:

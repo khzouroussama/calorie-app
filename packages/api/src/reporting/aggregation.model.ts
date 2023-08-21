@@ -23,14 +23,6 @@ export class GlobalEntryCountKeys extends ItemKeys {
   get sk() {
     return this.date;
   }
-
-  get gsi1pk(): string | undefined {
-    return undefined;
-  }
-
-  get gsi1sk(): string | undefined {
-    return undefined;
-  }
 }
 
 export class GlobalEntryCount extends Item<GlobalEntryCountModel> {
@@ -53,14 +45,6 @@ export class GlobalEntryCount extends Item<GlobalEntryCountModel> {
 
   toItem() {
     return this.marshall(this.globalEntryCount);
-  }
-
-  get gsi1pk(): string | undefined {
-    return undefined;
-  }
-
-  get gsi1sk(): string | undefined {
-    return undefined;
   }
 }
 
@@ -86,14 +70,6 @@ export class UserCalorieCountKeys extends ItemKeys {
 
   get sk() {
     return this.date;
-  }
-
-  get gsi1pk(): string | undefined {
-    return undefined;
-  }
-
-  get gsi1sk(): string | undefined {
-    return undefined;
   }
 }
 

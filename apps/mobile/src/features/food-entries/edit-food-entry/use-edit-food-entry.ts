@@ -12,10 +12,7 @@ export const useEditFoodEntry = createMutation<Response, Variables, AxiosError>(
   {
     mutationFn: async (variables) =>
       axios
-        .put(
-          `food-entries/${variables.consumptionDate.toISOString()}`,
-          variables,
-        )
+        .put(`food-entries/${variables.id}`, variables)
         .then((response) => response.data),
   },
 );

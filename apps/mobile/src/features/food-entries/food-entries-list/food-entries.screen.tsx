@@ -2,7 +2,7 @@ import { Box, Icons, Pressable, Screen, Typography } from '@/design-system';
 import { ActivityIndicator, RefreshControl } from 'react-native';
 import { useFoodEntries } from './use-food-entries';
 import { useCallback, useMemo } from 'react';
-import { FoodEntryCard } from './offer-entry-card.component';
+import { FoodEntryCard } from './offer-entry-card/offer-entry-card.component';
 import { colors, spacing } from '@/design-system/theme';
 import { useNavigation } from '@react-navigation/native';
 import type { FoodEntry } from '../food-entries.types';

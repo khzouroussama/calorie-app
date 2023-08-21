@@ -1,4 +1,4 @@
-export { FoodEntriesScreen } from './food-entries';
+export { FoodEntriesScreen } from './food-entries-list';
 export { AddFoodEntryScreen } from './add-food-entry';
 export { EditFoodEntryScreen } from './edit-food-entry';
 
