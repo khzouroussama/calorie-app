@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { tabBarIcon, tabBarLabel } from './navigation.helpers';
 import { UsersFoodEntriesNavigator } from './user-food-entries-navigator';
 import { typography } from '@/design-system/theme';
+import { DailyCaloriesScreen } from '@/features/reporting/daily-calories-list/daily-calories.screen';
 
 type TabParamList = {
   Home: undefined;
@@ -42,7 +43,7 @@ export const MainUserTabNavigator = () => {
         <Tab.Screen
           key="Calories"
           name="Calories"
-          component={FoodEntriesScreen}
+          component={DailyCaloriesScreen}
           options={{
             title: 'My Calories',
             tabBarIcon: tabBarIcon('Bolt'),

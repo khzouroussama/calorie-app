@@ -67,6 +67,10 @@ export const FoodEntryForm = ({
           queryKey: ['food-entries'],
         });
 
+        queryClient.invalidateQueries({
+          queryKey: ['daily-calories'],
+        });
+
         navigation.goBack();
       },
       onError: ({ message }) => {

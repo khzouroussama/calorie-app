@@ -2,33 +2,32 @@ import axios from 'axios';
 import { useStore } from '@/shared/store';
 import type { AxiosError } from 'axios';
 import { createInfiniteQuery } from 'react-query-kit';
-import { FoodEntry } from '../food-entries.types';
 import { stringifyQueryParams } from '@/shared/service/api';
+import { DailyCaloriesReport } from '../reporting.types';
 
 type Response = {
   data: {
     data: {
-      foodEntries: FoodEntry[];
+      dailyCalories: DailyCaloriesReport[];
       nextCursor: string;
     };
   };
 };
-type Variables = { dateFrom: string; dateTo: string };
+type Variables = { exceededCalorieLimit: boolean };
 
-export const useFoodEntries = createInfiniteQuery<
+export const useDailyCalories = createInfiniteQuery<
   Response,
   Variables,
   AxiosError
 >({
-  primaryKey: 'food-entries',
+  primaryKey: 'daily-calories',
   queryFn: async ({
-    queryKey: [primaryKey, { dateFrom, dateTo }],
+    queryKey: [primaryKey, { exceededCalorieLimit }],
     pageParam,
   }) => {
     return axios.get(
       `${primaryKey}?${stringifyQueryParams({
-        dateFrom,
-        dateTo,
+        exceededCalorieLimit,
         limit: 10,
         cursor: pageParam,
       })}`,
@@ -36,14 +35,12 @@ export const useFoodEntries = createInfiniteQuery<
   },
   getNextPageParam: (lastPage) => lastPage.data.data.nextCursor,
   useDefaultOptions() {
-    const dateFrom = useStore((state) => state.foodEntries.filters.dateFrom);
-    const dateTo = useStore((state) => state.foodEntries.filters.dateTo);
+    const exceededCalorieLimit = useStore(
+      (state) => state.reporting.dailyCalories.filters.exceededCalorieLimit,
+    );
 
     return {
-      variables: {
-        dateFrom: dateFrom?.toISOString(),
-        dateTo: dateTo?.toISOString(),
-      },
+      variables: { exceededCalorieLimit },
     };
   },
 });
