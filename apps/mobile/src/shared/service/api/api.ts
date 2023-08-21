@@ -24,24 +24,20 @@ export function useAddAuthHeader() {
   ]);
 
   useEffect(() => {
+    if (authStatus !== 'authenticated') return;
     if (user) {
-      axios.defaults.headers.common.Authorization = user
-        ?.getSignInUserSession()
-        .getIdToken()
-        .getJwtToken();
+      const idToken = user.getSignInUserSession().getIdToken();
+      axios.defaults.headers.common.Authorization = idToken.getJwtToken();
 
       if (
-        user
-          ?.getSignInUserSession()
-          ?.getIdToken()
-          .payload['cognito:groups']?.includes?.(
-            `admin-${process.env?.EXPO_PUBLIC_STAGE?.toLowerCase()}`,
-          )
+        idToken.payload['cognito:groups']?.includes?.(
+          `admin-${process.env?.EXPO_PUBLIC_STAGE?.toLowerCase()}`,
+        )
       ) {
         setIsAdmin(true);
       }
     }
-  }, [user]);
+  }, [authStatus, user]);
 
   return { isPending, authStatus, isAdmin };
 }
