@@ -18,7 +18,7 @@ import {
 import { encodeCursor, paginateParams } from '@calorie-app/http';
 
 export interface FoodEntryModel {
-  /**  ISO string of the date of when the food entry was created */
+  /**  ISOfstring of the date of when the food entry was created */
   id?: string;
   name: string;
   calories: number;
@@ -31,7 +31,7 @@ export interface FoodEntryModel {
 export class FoodEntryKeys extends ItemKeys {
   static ENTITY_TYPE = 'FOODENTRY';
 
-  constructor(private userId: string, private foodEntryDate: string) {
+  constructor(private userId: string, private dateOfConsumption: string) {
     super();
   }
 
@@ -40,15 +40,7 @@ export class FoodEntryKeys extends ItemKeys {
   }
 
   get sk() {
-    return `${FoodEntryKeys.ENTITY_TYPE}#${this.foodEntryDate}`;
-  }
-
-  get gsi1pk() {
-    return `FOODENTRIES`;
-  }
-
-  get gsi1sk() {
-    return `${FoodEntryKeys.ENTITY_TYPE}#${this.foodEntryDate}`;
+    return `${FoodEntryKeys.ENTITY_TYPE}#${this.dateOfConsumption}`;
   }
 }
 
@@ -74,8 +66,20 @@ export class FoodEntry extends Item<FoodEntryModel> {
     return new FoodEntryKeys(this.userId, this.foodEntry.consumptionDate!);
   }
 
+  get gsi1pk() {
+    return `FOODENTRIES`;
+  }
+
+  get gsi1sk() {
+    return `${FoodEntryKeys.ENTITY_TYPE}#${this.foodEntry.consumptionDate}`;
+  }
+
   toItem() {
-    return this.marshall(this.foodEntry);
+    return {
+      ...this.marshall(this.foodEntry),
+      GSI1PK: { S: this.gsi1sk },
+      GSI1SK: { S: this.gsi1sk },
+    };
   }
 }
 
@@ -154,18 +158,12 @@ export const updateFoodEntry = async (
     updatedAt: new Date().toISOString(),
   });
 
-  const oldFoodEntry = await getItem(food.keys, {
-    Key: {
-      // TODO: refactor this
-      PK: food.keys.toItem().PK,
-      SK: food.keys.toItem().SK,
-    },
-  });
+  const oldFoodEntry = await getItem(food.keys);
   const oldCalories = FoodEntry.fromItem(oldFoodEntry.Item ?? {})?.calories;
 
   const userCalorieCount = new UserCalorieCount({
     userId,
-    date: foodEntry.id!.split('T')[0],
+    date: foodEntry.consumptionDate!.split('T')[0],
   });
 
   await executeTransactWrite({
@@ -200,12 +198,7 @@ export const updateFoodEntry = async (
     foodEntry.consumptionDate !== oldFoodEntry?.Item?.consumptionDate.S
   ) {
     console.log(JSON.stringify({ oldFoodEntry }));
-    await deleteItem(food.keys, {
-      Key: {
-        PK: oldFoodEntry?.Item?.PK?.S as any,
-        SK: oldFoodEntry?.Item?.SK?.S as any,
-      },
-    });
+    await deleteItem(food.keys);
   }
 
   return { success: true };
