@@ -45,13 +45,11 @@ export const FoodEntryForm = ({
       ...(update
         ? defaultValues
         : {
+            name: '',
+            calories: null,
             consumptionDate: new Date(),
           }),
     },
-  });
-
-  console.log({
-    defaultValues,
   });
 
   const onSubmit = (data: FoodEntryFormData) => {
