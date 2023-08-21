@@ -1,5 +1,7 @@
-import { Item, ItemKeys, createItem, getItem } from '@calorie-app/db';
+import { Item, ItemKeys, createItem, getItem, query } from '@calorie-app/db';
 import { AttributeValue } from '@aws-sdk/client-dynamodb';
+import { encodeCursor, paginateParams } from '@calorie-app/http';
+import { User, UserKeys } from '@/users/user.model';
 
 // Global Entry Count
 
@@ -54,7 +56,7 @@ export interface UserCalorieCountModel {
   userId: string;
   // a date only string in the format of YYYY-MM-DD
   date: string;
-  totalCalories?: number;
+  totalOfCalories?: number;
 }
 
 export class UserCalorieCountKeys extends ItemKeys {
@@ -84,7 +86,7 @@ export class UserCalorieCount extends Item<UserCalorieCountModel> {
     return {
       userId: attributeMap.userId.S!,
       date: attributeMap.date.S!,
-      totalCalories: parseFloat(attributeMap.totalCalories.N || '0'),
+      totalOfCalories: parseFloat(attributeMap.totalOfCalories.N || '0'),
     };
   }
 
@@ -131,3 +133,61 @@ export async function getUserCalorieCount(
   const result = await getItem(calorieCountKeys);
   return UserCalorieCount.fromItem(result.Item ?? {});
 }
+
+export const getDailyCalories = async (
+  userId: string,
+  cursor?: string,
+  limit?: number,
+  filters?: {
+    exceededCalorieLimit: boolean;
+  },
+) => {
+  const userKeys = new UserKeys(userId);
+  const userCalorieCountKeys = new UserCalorieCountKeys(
+    userId,
+    new Date().toISOString().split('T')[0],
+  );
+
+  const user = User.fromItem((await getItem(userKeys)).Item || {});
+
+  console.log(
+    JSON.stringify({
+      user,
+      userKeys,
+      userCalorieCountKeys,
+    }),
+  );
+
+  const params: Parameters<typeof query>[0] = {
+    KeyConditionExpression: '#pk = :pk',
+    ExpressionAttributeNames: {
+      '#pk': 'PK',
+    },
+    ...(filters?.exceededCalorieLimit && {
+      FilterExpression: 'totalOfCalories > :limit',
+    }),
+    ExpressionAttributeValues: {
+      ':pk': userCalorieCountKeys.toItem().PK,
+      ...(filters?.exceededCalorieLimit && {
+        ':limit': { N: user.calorieLimit.toString() },
+      }),
+    },
+    ScanIndexForward: false,
+  };
+
+  console.log(JSON.stringify(params));
+
+  const result = await query({
+    ...params,
+    ...paginateParams(cursor, limit),
+  });
+
+  console.log(JSON.stringify(result));
+
+  return {
+    dailyCalories: result.Items?.map((item) => UserCalorieCount.fromItem(item)),
+    nextCursor: result.LastEvaluatedKey
+      ? encodeCursor(result.LastEvaluatedKey)
+      : null,
+  };
+};

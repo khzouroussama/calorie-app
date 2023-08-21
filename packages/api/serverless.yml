@@ -94,6 +94,17 @@ functions:
             authorizerId:
               Ref: CalorieAppApiGatewayAuthorizer
 
+  get-daily-calories:
+    handler: src/reporting/get-daily-calories/get-daily-calories-handler.main
+    events:
+      - http:
+          path: /v1/daily-calories
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CalorieAppApiGatewayAuthorizer
+
 custom:
   esbuild:
     bundle: true

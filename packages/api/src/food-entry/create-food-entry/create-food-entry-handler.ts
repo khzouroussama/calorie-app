@@ -15,6 +15,7 @@ export const main = createHandler<Params>(async (event, context) => {
     const result = await createFoodEntry(
       event.requestContext.authorizer?.claims?.sub,
       {
+        id: new Date(event.body.consumptionDate).toISOString(),
         name: event.body.name,
         calories: event.body.calories,
         consumptionDate: new Date(event.body.consumptionDate).toISOString(),

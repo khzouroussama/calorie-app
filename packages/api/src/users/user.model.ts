@@ -24,14 +24,6 @@ export class UserKeys extends ItemKeys {
   get sk() {
     return `${UserKeys.ENTITY_TYPE}#${this.userId}`;
   }
-
-  get gsi1pk(): string | undefined {
-    return undefined;
-  }
-
-  get gsi1sk(): string | undefined {
-    return undefined;
-  }
 }
 
 export class User extends Item<UserModel> {
@@ -50,6 +42,14 @@ export class User extends Item<UserModel> {
 
   get keys() {
     return new UserKeys(this.user.id);
+  }
+
+  get gsi1pk() {
+    return undefined;
+  }
+
+  get gsi1sk() {
+    return undefined;
   }
 
   toItem() {

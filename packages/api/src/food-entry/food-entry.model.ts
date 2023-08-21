@@ -59,6 +59,7 @@ export class FoodEntry extends Item<FoodEntryModel> {
       consumptionDate: attributeMap?.consumptionDate?.S,
       photoUrl: attributeMap?.photoUrl?.S,
       createdAt: attributeMap?.createdAt?.S,
+      updatedAt: attributeMap?.updatedAt?.S,
     };
   }
 
@@ -77,7 +78,7 @@ export class FoodEntry extends Item<FoodEntryModel> {
   toItem() {
     return {
       ...this.marshall(this.foodEntry),
-      GSI1PK: { S: this.gsi1sk },
+      GSI1PK: { S: this.gsi1pk },
       GSI1SK: { S: this.gsi1sk },
     };
   }
@@ -89,20 +90,24 @@ export const createFoodEntry = async (
 ) => {
   const client = getClient();
 
-  const creationDate = new Date().toISOString();
-
   const food = new FoodEntry(userId, {
     ...foodEntry,
     createdAt: `${new Date().toISOString()}`,
   });
 
   const globalEntryCount = new GlobalEntryCount({
-    date: creationDate.split('T')[0],
+    date: foodEntry.consumptionDate.split('T')[0],
   });
 
   const userCalorieCount = new UserCalorieCount({
     userId,
-    date: creationDate.split('T')[0],
+    date: foodEntry.consumptionDate.split('T')[0],
+  });
+
+  console.log({
+    food,
+    foodToItam: food.toItem(),
+    foodEntry,
   });
 
   await executeTransactWrite({
