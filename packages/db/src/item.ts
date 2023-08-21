@@ -32,7 +32,6 @@ export abstract class Item<T extends Record<string, any>> {
     return {
       ...this.keys.fromItem(),
       entityType: (this.keys.constructor as any).ENTITY_TYPE,
-      createdAt: new Date().toISOString(),
     };
   }
 

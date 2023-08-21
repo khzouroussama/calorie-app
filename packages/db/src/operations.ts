@@ -95,6 +95,10 @@ export async function getItem(
   options?: Omit<GetItemCommand['input'], 'TableName'>,
 ) {
   const db = getClient();
+  console.log({
+    keys,
+    titem: keys.toItem(),
+  });
 
   try {
     return await db.send(
@@ -105,6 +109,7 @@ export async function getItem(
       }),
     );
   } catch (e) {
+    console.log('getItem:');
     dbErrorLogger(e);
     throw { success: false };
   }
@@ -112,7 +117,7 @@ export async function getItem(
 
 export function buildDynamicUpdateParams<T extends Item<any>>(
   item: T,
-  options?: Omit<UpdateItemCommand['input'], 'TableName' | 'Key'>,
+  options?: Partial<Omit<UpdateItemCommand['input'], 'TableName'>>,
 ) {
   const allDbKeys = Object.keys(item.keys.toItem());
 
@@ -122,31 +127,31 @@ export function buildDynamicUpdateParams<T extends Item<any>>(
 
   return {
     TableName: DYNAMODB_TABLE_NAME,
-    Key: item.keys.toItem(),
+    Key: options?.Key ? options.Key : item.keys.toItem(),
     ReturnValues: 'ALL_NEW',
     UpdateExpression: `SET ${itemKeys
       .map((k, index) => `#field${index} = :value${index}`)
-      .join(', ')} ${options?.UpdateExpression}`,
+      .join(', ')} ${options?.UpdateExpression || ''}`,
     ExpressionAttributeNames: itemKeys.reduce(
       (accumulator, k, index) => ({
         ...accumulator,
         [`#field${index}`]: k,
       }),
-      options?.ExpressionAttributeNames,
+      options?.ExpressionAttributeNames ?? {},
     ),
     ExpressionAttributeValues: itemKeys.reduce(
       (accumulator, k, index) => ({
         ...accumulator,
         [`:value${index}`]: item.toItem()[k],
       }),
-      options?.ExpressionAttributeValues,
+      options?.ExpressionAttributeValues ?? {},
     ),
   } as const;
 }
 
 export async function updateOrReplaceItem<T extends Item<any>>(
   item: T,
-  options?: Omit<GetItemCommand['input'], 'TableName'>,
+  options?: Omit<UpdateItemCommand['input'], 'TableName'>,
 ) {
   const db = getClient();
 

@@ -3,6 +3,7 @@ import {
   Item,
   ItemKeys,
   buildDynamicUpdateParams,
+  deleteItem,
   executeTransactWrite,
   getClient,
   getItem,
@@ -24,6 +25,7 @@ export interface FoodEntryModel {
   photoUrl?: string;
   consumptionDate: string;
   createdAt?: string;
+  updatedAt?: string;
 }
 
 export class FoodEntryKeys extends ItemKeys {
@@ -147,10 +149,19 @@ export const updateFoodEntry = async (
 ) => {
   const client = getClient();
 
-  const food = new FoodEntry(userId, foodEntry);
+  const food = new FoodEntry(userId, {
+    ...foodEntry,
+    updatedAt: new Date().toISOString(),
+  });
 
-  const oldFoodEntry = await getItem(new FoodEntryKeys(userId, foodEntry.id!));
-  const oldCalories = FoodEntry.fromItem(oldFoodEntry.Item ?? {}).calories;
+  const oldFoodEntry = await getItem(food.keys, {
+    Key: {
+      // TODO: refactor this
+      PK: food.keys.toItem().PK,
+      SK: food.keys.toItem().SK,
+    },
+  });
+  const oldCalories = FoodEntry.fromItem(oldFoodEntry.Item ?? {})?.calories;
 
   const userCalorieCount = new UserCalorieCount({
     userId,
@@ -162,7 +173,10 @@ export const updateFoodEntry = async (
     params: {
       TransactItems: [
         {
-          Update: buildDynamicUpdateParams(food, {}),
+          Put: {
+            TableName: DYNAMODB_TABLE_NAME,
+            Item: food.toItem(),
+          },
         },
         {
           Update: {
@@ -180,6 +194,19 @@ export const updateFoodEntry = async (
       ],
     },
   });
+
+  if (
+    oldFoodEntry.Item &&
+    foodEntry.consumptionDate !== oldFoodEntry?.Item?.consumptionDate.S
+  ) {
+    console.log(JSON.stringify({ oldFoodEntry }));
+    await deleteItem(food.keys, {
+      Key: {
+        PK: oldFoodEntry?.Item?.PK?.S as any,
+        SK: oldFoodEntry?.Item?.SK?.S as any,
+      },
+    });
+  }
 
   return { success: true };
 };
