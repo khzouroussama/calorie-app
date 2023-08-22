@@ -49,6 +49,13 @@ PK: AGGREGATION#CALORIES#<UserId>
 SK: <Date>  // Filter by TotalCalories > DailyCalorieLimit of the user
 ```
 
+8. **Get the list of users (admin)**
+
+```
+GSI1PK: USERS
+GSI1SK: ?
+```
+
 ## Entities:
 
 - **User**: Represents both regular users and admins.

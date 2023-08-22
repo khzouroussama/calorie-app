@@ -8,7 +8,7 @@ import {
 } from '@calorie-app/http';
 import { UserKeys } from '@/users/user.model';
 import { number, object, string } from 'yup';
-import { getFoodEntries } from '../food-entry.model';
+import { getUserFoodEntries } from '../food-entry.model';
 
 type Params = QueryParams<{ dateFrom: string; dateTo: string }> &
   PaginationParams;
@@ -18,7 +18,7 @@ export const main = createHandler<Params>(async (event, context) => {
   const { cursor, limit, dateTo, dateFrom } = event.queryStringParameters;
 
   try {
-    const { foodEntries, nextCursor } = await getFoodEntries(
+    const { foodEntries, nextCursor } = await getUserFoodEntries(
       userKeys,
       cursor,
       limit,

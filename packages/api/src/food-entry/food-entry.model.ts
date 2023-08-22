@@ -26,6 +26,7 @@ export interface FoodEntryModel {
   consumptionDate: string;
   createdAt?: string;
   updatedAt?: string;
+  userId?: string;
 }
 
 export class FoodEntryKeys extends ItemKeys {
@@ -60,6 +61,7 @@ export class FoodEntry extends Item<FoodEntryModel> {
       photoUrl: attributeMap?.photoUrl?.S,
       createdAt: attributeMap?.createdAt?.S,
       updatedAt: attributeMap?.updatedAt?.S,
+      userId: attributeMap?.PK?.S?.split?.('#')?.[1],
     };
   }
 
@@ -337,6 +339,7 @@ export const getFoodEntries = async (
   const defaultToDate = new Date().toISOString();
 
   const params: Parameters<typeof query>[0] = {
+    IndexName: 'GSI1',
     KeyConditionExpression:
       '#gsi1pk = :gsi1pk AND #gsi1sk BETWEEN :dateFrom AND :dateTo',
     ExpressionAttributeNames: {
