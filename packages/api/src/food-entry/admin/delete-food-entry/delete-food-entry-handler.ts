@@ -10,7 +10,8 @@ import {
 type Params = PathParams<{ id: string }>;
 
 export const main = createHandler<Params>(async (event, context) => {
-  const [userId, foodEntryId] = event.pathParameters.id.split('#');
+  const [userId, foodEntryId] = event.pathParameters.id.split('_');
+
   try {
     const result = await deleteFoodEntry(
       userId,
