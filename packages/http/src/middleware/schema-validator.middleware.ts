@@ -15,7 +15,6 @@ export function schemaValidator<P extends EventParams>(schema: {
     APIGatewayProxyResult
   > = async (request) => {
     try {
-      console.log(JSON.stringify(request));
       const { body, queryStringParameters } = request.event;
 
       if (schema.body) {

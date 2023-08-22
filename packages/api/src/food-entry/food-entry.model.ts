@@ -215,7 +215,6 @@ export const updateFoodEntry = async (
     oldFoodEntry &&
     foodEntry.consumptionDate !== oldFoodEntry?.consumptionDate
   ) {
-    console.log(JSON.stringify({ oldFoodEntry }));
     await deleteItem(oldFood.keys);
   }
 
@@ -281,7 +280,7 @@ export const deleteFoodEntry = async (
   return { success: true };
 };
 
-export const getFoodEntries = async (
+export const getUserFoodEntries = async (
   userKeys: UserKeys,
   cursor?: string,
   limit?: number,
@@ -301,6 +300,51 @@ export const getFoodEntries = async (
     },
     ExpressionAttributeValues: {
       ':pk': { S: userKeys.pk },
+      ':dateFrom': {
+        S: `${FoodEntryKeys.ENTITY_TYPE}#${
+          filters?.dateFrom || defaultFromDate
+        }`,
+      },
+      ':dateTo': {
+        S: `${FoodEntryKeys.ENTITY_TYPE}#${filters?.dateTo || defaultToDate}`,
+      },
+    },
+    ScanIndexForward: false,
+  };
+
+  const result = await query({
+    ...params,
+    ...paginateParams(cursor, limit),
+  });
+
+  return {
+    foodEntries: result.Items?.map((item) => FoodEntry.fromItem(item)),
+    nextCursor: result.LastEvaluatedKey
+      ? encodeCursor(result.LastEvaluatedKey)
+      : null,
+  };
+};
+
+export const getFoodEntries = async (
+  cursor?: string,
+  limit?: number,
+  filters?: {
+    dateFrom?: string;
+    dateTo?: string;
+  },
+) => {
+  const defaultFromDate = new Date(0, 0, 1).toISOString();
+  const defaultToDate = new Date().toISOString();
+
+  const params: Parameters<typeof query>[0] = {
+    KeyConditionExpression:
+      '#gsi1pk = :gsi1pk AND #gsi1sk BETWEEN :dateFrom AND :dateTo',
+    ExpressionAttributeNames: {
+      '#gsi1pk': 'GSI1PK',
+      '#gsi1sk': 'GSI1SK',
+    },
+    ExpressionAttributeValues: {
+      ':gsi1pk': { S: 'FOODENTRIES' },
       ':dateFrom': {
         S: `${FoodEntryKeys.ENTITY_TYPE}#${
           filters?.dateFrom || defaultFromDate

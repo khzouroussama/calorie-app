@@ -1,6 +1,7 @@
-import { Item, ItemKeys, createItem, getItem } from '@calorie-app/db';
+import { Item, ItemKeys, createItem, getItem, query } from '@calorie-app/db';
 import { UserRoles } from './user.types';
 import { AttributeValue } from '@aws-sdk/client-dynamodb';
+import { encodeCursor, paginateParams } from '@calorie-app/http';
 
 export interface UserModel {
   /** The user's unique ID from cognito (sub) */
@@ -45,15 +46,19 @@ export class User extends Item<UserModel> {
   }
 
   get gsi1pk() {
-    return undefined;
+    return `USERS`;
   }
 
   get gsi1sk() {
-    return undefined;
+    return `#USER`;
   }
 
   toItem() {
-    return this.marshall(this.user);
+    return {
+      ...this.marshall(this.user),
+      GSI1PK: { S: this.gsi1pk },
+      GSI1SK: { S: this.gsi1sk },
+    };
   }
 }
 
@@ -68,3 +73,28 @@ export async function getUser(userKeys: UserKeys): Promise<UserModel> {
 
   return User.fromItem(result.Item ?? {});
 }
+
+export const getAllUsers = async (cursor?: string, limit?: number) => {
+  const params: Parameters<typeof query>[0] = {
+    KeyConditionExpression: '#gsi1pk = :gsi1pk',
+    ExpressionAttributeNames: {
+      '#gsi1pk': 'GSI1PK',
+    },
+    ExpressionAttributeValues: {
+      ':gsi1pk': { S: 'USERS' },
+    },
+    ScanIndexForward: false,
+  };
+
+  const result = await query({
+    ...params,
+    ...paginateParams(cursor, limit),
+  });
+
+  return {
+    users: result.Items?.map((item) => User.fromItem(item)),
+    nextCursor: result.LastEvaluatedKey
+      ? encodeCursor(result.LastEvaluatedKey)
+      : null,
+  };
+};

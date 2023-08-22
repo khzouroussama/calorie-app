@@ -105,6 +105,61 @@ functions:
             authorizerId:
               Ref: CalorieAppApiGatewayAuthorizer
 
+  admin-create-food-entry:
+    handler: src/food-entry/admin/create-food-entry/create-food-entry-handler.main
+    events:
+      - http:
+          path: /v1/admin/food-entries/{id}
+          method: post
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              ref: CalorieAppApiGatewayAuthorizer
+
+  admin-update-food-entry:
+    handler: src/food-entry/admin/update-food-entry/update-food-entry-handler.main
+    events:
+      - http:
+          path: /v1/admin/food-entries/{id}
+          method: put
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              ref: CalorieAppApiGatewayAuthorizer
+
+  admin-delete-food-entry:
+    handler: src/food-entry/admin/delete-food-entry/delete-food-entry-handler.main
+    events:
+      - http:
+          path: /v1/admin/food-entries/{id}
+          method: delete
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CalorieAppApiGatewayAuthorizer
+
+  admin-get-all-food-entries:
+    handler: src/food-entry/admin/get-all-food-entries/get-all-food-entries-handler.main
+    events:
+      - http:
+          path: /v1/admin/food-entries
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CalorieAppApiGatewayAuthorizer
+
+  admin-get-all-users:
+    handler: src/users/admin/get-all-users/get-all-users-handler.main
+    events:
+      - http:
+          path: /v1/admin/users
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CalorieAppApiGatewayAuthorizer
+
 custom:
   esbuild:
     bundle: true
