@@ -21,7 +21,7 @@ export type StoreState = FoodEntriesSlice & ReportingSlice; // & OtherSlice & An
 export type StoreActions = FoodEntriesSliceActions & ReportingSliceActions; // & OtherSliceActions & AnotherSliceActions
 
 export type Store = StoreState & {
-  actions: StoreActions;
+  actions: StoreActions & { reset: () => void };
 };
 
 export type StoreMiddleware = [['zustand/immer', never]];
@@ -33,6 +33,13 @@ export const store = create<Store, StoreMiddleware>(
     actions: {
       ...createFoodEntriesActions(...a),
       ...createReportingActions(...a),
+      // reset store action
+      reset: () => {
+        a[0]((state) => {
+          state.foodEntries = createFoodEntriesSlice(...a).foodEntries;
+          state.reporting = createReportingSlice(...a).reporting;
+        });
+      },
     },
   })),
 );
