@@ -2,6 +2,7 @@ import { Item, ItemKeys, createItem, getItem, query } from '@calorie-app/db';
 import { AttributeValue } from '@aws-sdk/client-dynamodb';
 import { encodeCursor, paginateParams } from '@calorie-app/http';
 import { User, UserKeys } from '@/users/user.model';
+import { get14DaysAgoDate, getNDaysAgoDate } from './reporting.helpers';
 
 // Global Entry Count
 
@@ -150,14 +151,6 @@ export const getDailyCalories = async (
 
   const user = User.fromItem((await getItem(userKeys)).Item || {});
 
-  console.log(
-    JSON.stringify({
-      user,
-      userKeys,
-      userCalorieCountKeys,
-    }),
-  );
-
   const params: Parameters<typeof query>[0] = {
     KeyConditionExpression: '#pk = :pk',
     ExpressionAttributeNames: {
@@ -175,19 +168,84 @@ export const getDailyCalories = async (
     ScanIndexForward: false,
   };
 
-  console.log(JSON.stringify(params));
-
   const result = await query({
     ...params,
     ...paginateParams(cursor, limit),
   });
-
-  console.log(JSON.stringify(result));
 
   return {
     dailyCalories: result.Items?.map((item) => UserCalorieCount.fromItem(item)),
     nextCursor: result.LastEvaluatedKey
       ? encodeCursor(result.LastEvaluatedKey)
       : null,
+  };
+};
+
+export const getAdminGlobalReports = async () => {
+  const today = new Date().toISOString().split('T')[0];
+  const date14DaysAgo = getNDaysAgoDate(14);
+
+  const params: Parameters<typeof query>[0] = {
+    KeyConditionExpression: '#pk = :pk AND #sk BETWEEN :min AND :max',
+    ExpressionAttributeNames: {
+      '#pk': 'PK',
+      '#sk': 'SK',
+    },
+    ExpressionAttributeValues: {
+      ':pk': {
+        S: `AGGREGATION#ENTRIES`,
+      },
+      ':min': {
+        S: date14DaysAgo,
+      },
+      ':max': {
+        S: today,
+      },
+    },
+    ScanIndexForward: false,
+  };
+
+  const result = await query({
+    ...params,
+  });
+
+  return {
+    reports: result.Items?.map((item) => GlobalEntryCount.fromItem(item)),
+  };
+};
+
+export const getUserReports = async (userId: string) => {
+  const userCalorieCountKeys = new UserCalorieCountKeys(
+    userId,
+    new Date().toISOString().split('T')[0],
+  );
+
+  const today = new Date().toISOString().split('T')[0];
+  const date7DaysAgo = getNDaysAgoDate(7);
+
+  const params: Parameters<typeof query>[0] = {
+    KeyConditionExpression: '#pk = :pk AND #sk BETWEEN :min AND :max',
+    ExpressionAttributeNames: {
+      '#pk': 'PK',
+      '#sk': 'SK',
+    },
+    ExpressionAttributeValues: {
+      ':pk': userCalorieCountKeys.toItem().PK,
+      ':min': {
+        S: date7DaysAgo,
+      },
+      ':max': {
+        S: today,
+      },
+    },
+    ScanIndexForward: false,
+  };
+
+  const result = await query({
+    ...params,
+  });
+
+  return {
+    reports: result.Items?.map((item) => UserCalorieCount.fromItem(item)),
   };
 };

@@ -2,10 +2,10 @@ import { Control, RegisterOptions, useController } from 'react-hook-form';
 
 import React, { useMemo } from 'react';
 import { Select, SelectProps } from '@/design-system/components/select/select';
-import { useAdminListOfUsers } from '../hooks';
 import { RefreshControl } from 'react-native-gesture-handler';
 import { Box } from '@/design-system';
 import { ActivityIndicator } from 'react-native';
+import { useAdminGetUsersList } from '../hooks';
 
 type SelectUserFieldProps = {
   name: string;
@@ -26,7 +26,7 @@ export function SelectUserField(props: SelectUserFieldProps) {
     fetchNextPage,
     isFetchingNextPage,
     hasNextPage,
-  } = useAdminListOfUsers();
+  } = useAdminGetUsersList();
 
   const options = useMemo(() => {
     if (!data?.pages) return [];

@@ -162,6 +162,28 @@ functions:
             authorizerId:
               Ref: CalorieAppApiGatewayAuthorizer
 
+  admin-get-global-reports:
+    handler: src/reporting/admin/get-global-reports/get-global-reports-handler.main
+    events:
+      - http:
+          path: /v1/admin/global-reports
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CalorieAppApiGatewayAuthorizer
+
+  admin-get-user-reports:
+    handler: src/reporting/admin/get-user-reports/get-user-reports-handler.main
+    events:
+      - http:
+          path: /v1/admin/user-reports
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CalorieAppApiGatewayAuthorizer
+
 custom:
   esbuild:
     bundle: true

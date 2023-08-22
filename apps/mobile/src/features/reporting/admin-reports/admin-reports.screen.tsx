@@ -3,12 +3,12 @@ import { ActivityIndicator, RefreshControl } from 'react-native';
 import { useCallback, useMemo } from 'react';
 import { spacing } from '@/design-system/theme';
 import Animated, { Layout } from 'react-native-reanimated';
-import { useDailyCalories } from './use-daily-calories';
-import { DailyCaloriesCard } from './daily-calories-card';
 import type { DailyCaloriesReport } from '../reporting.types';
-import { DailyCaloriesHeader } from './daily-calories-header';
+import { useAdminGetUsersList } from '@/shared/hooks';
+import { UserReportCard } from './user-report-card.componenet';
+import { AdminReportingHeader } from './admin-reporting-header.component';
 
-export const DailyCaloriesScreen = () => {
+export const AdminReportsScreen = () => {
   const {
     data,
     status,
@@ -17,15 +17,15 @@ export const DailyCaloriesScreen = () => {
     fetchNextPage,
     isFetchingNextPage,
     hasNextPage,
-  } = useDailyCalories();
+  } = useAdminGetUsersList();
 
-  const reports = useMemo(() => {
+  const users = useMemo(() => {
     if (!data?.pages) return [];
-    return data.pages.flatMap((item) => item.data.data.dailyCalories);
+    return data.pages.flatMap((item) => item.data.data.users);
   }, [data?.pages]);
 
   const renderItem = useCallback(
-    ({ item }) => <DailyCaloriesCard dailyCaloriesItem={item} />,
+    ({ item }) => <UserReportCard user={item} />,
     [],
   );
 
@@ -38,7 +38,7 @@ export const DailyCaloriesScreen = () => {
           gap: 'sm',
         }}
       >
-        <DailyCaloriesHeader />
+        <AdminReportingHeader />
       </Box>
       {status === 'loading' ? (
         <Box sx={{ flex: 1 }}>
@@ -50,7 +50,7 @@ export const DailyCaloriesScreen = () => {
         </Box>
       ) : (
         <Animated.FlatList<DailyCaloriesReport>
-          data={reports}
+          data={users}
           keyExtractor={(item) => item.date}
           itemLayoutAnimation={Layout.duration(400)}
           renderItem={renderItem}

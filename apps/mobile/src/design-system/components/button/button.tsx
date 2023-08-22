@@ -1,5 +1,11 @@
 import React, { ForwardedRef, useMemo } from 'react';
-import { Pressable, Box, PressableProps, Typography } from '@/design-system';
+import {
+  Pressable,
+  Box,
+  PressableProps,
+  Typography,
+  TypographyProps,
+} from '@/design-system';
 import { ActivityIndicator, ViewStyle } from 'react-native';
 
 import { colors, spacing } from '../../theme';
@@ -19,7 +25,7 @@ type ButtonProps = {
   iconSize?: number;
   loading?: boolean;
   animatedText?: boolean;
-  textProps?: any;
+  textProps?: TypographyProps;
   isDropdown?: boolean;
 } & PressableProps;
 
@@ -164,8 +170,8 @@ const getButtonStyles = (
     },
     white: {
       backgroundColor: 'neutral100',
-      color: 'neutral800',
-      borderColor: 'neutral300',
+      color: 'primary500',
+      borderColor: 'primary500',
       pressedBackgroundColor: 'neutral200',
     },
   } as const;

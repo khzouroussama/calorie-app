@@ -3,22 +3,23 @@ import type { AxiosError } from 'axios';
 import { createInfiniteQuery } from 'react-query-kit';
 import { stringifyQueryParams } from '@/shared/service/api';
 
+export type User = {
+  id: string;
+  calorieLimit: number;
+  email: string;
+};
+
 type Response = {
   data: {
     data: {
-      users: {
-        id: string;
-        name: string;
-        calorieLimit: number;
-        email: string;
-      }[];
+      users: User[];
       nextCursor: string;
     };
   };
 };
 type Variables = null;
 
-export const useAdminListOfUsers = createInfiniteQuery<
+export const useAdminGetUsersList = createInfiniteQuery<
   Response,
   Variables,
   AxiosError
