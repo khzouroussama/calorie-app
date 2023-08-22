@@ -76,6 +76,7 @@ export async function getUser(userKeys: UserKeys): Promise<UserModel> {
 
 export const getAllUsers = async (cursor?: string, limit?: number) => {
   const params: Parameters<typeof query>[0] = {
+    IndexName: 'GSI1',
     KeyConditionExpression: '#gsi1pk = :gsi1pk',
     ExpressionAttributeNames: {
       '#gsi1pk': 'GSI1PK',

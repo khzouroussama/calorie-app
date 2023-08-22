@@ -1,0 +1,156 @@
+diff --git a/node_modules/@gorhom/bottom-sheet/src/components/bottomSheetModal/BottomSheetModal.tsx b/node_modules/@gorhom/bottom-sheet/src/components/bottomSheetModal/BottomSheetModal.tsx
+index 8ee4f05..07ad9b5 100644
+--- a/node_modules/@gorhom/bottom-sheet/src/components/bottomSheetModal/BottomSheetModal.tsx
++++ b/node_modules/@gorhom/bottom-sheet/src/components/bottomSheetModal/BottomSheetModal.tsx
+@@ -45,6 +45,7 @@ const BottomSheetModalComponent = forwardRef<
+     snapPoints,
+     enablePanDownToClose = true,
+     animateOnMount = true,
++    containerComponent: ContainerComponent = React.Fragment,
+ 
+     // callbacks
+     onChange: _providedOnChange,
+@@ -120,7 +121,7 @@ const BottomSheetModalComponent = forwardRef<
+         _providedOnDismiss();
+       }
+     },
+-    [key, resetVariables, unmountSheet, unmountPortal, _providedOnDismiss]
++    [key, resetVariables, unmountSheet, unmountPortal, _providedOnDismiss],
+   );
+   //#endregion
+ 
+@@ -132,7 +133,7 @@ const BottomSheetModalComponent = forwardRef<
+       }
+       bottomSheetRef.current?.snapToIndex(...args);
+     },
+-    []
++    [],
+   );
+   const handleSnapToPosition = useCallback<
+     BottomSheetMethods['snapToPosition']
+@@ -155,7 +156,7 @@ const BottomSheetModalComponent = forwardRef<
+       }
+       bottomSheetRef.current?.collapse(...args);
+     },
+-    []
++    [],
+   );
+   const handleClose = useCallback<BottomSheetMethods['close']>((...args) => {
+     if (minimized.current) {
+@@ -170,7 +171,7 @@ const BottomSheetModalComponent = forwardRef<
+       }
+       bottomSheetRef.current?.forceClose(...args);
+     },
+-    []
++    [],
+   );
+   //#endregion
+ 
+@@ -191,7 +192,7 @@ const BottomSheetModalComponent = forwardRef<
+       });
+     },
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+-    [key, stackBehavior, mountSheet]
++    [key, stackBehavior, mountSheet],
+   );
+   const handleDismiss = useCallback<BottomSheetModalMethods['dismiss']>(
+     function handleDismiss(animationConfigs) {
+@@ -221,7 +222,7 @@ const BottomSheetModalComponent = forwardRef<
+       forcedDismissed.current = true;
+       bottomSheetRef.current?.forceClose(animationConfigs);
+     },
+-    [willUnmountSheet, unmount, key, enablePanDownToClose]
++    [willUnmountSheet, unmount, key, enablePanDownToClose],
+   );
+   const handleMinimize = useCallback(
+     function handleMinimize() {
+@@ -249,7 +250,7 @@ const BottomSheetModalComponent = forwardRef<
+       }
+       bottomSheetRef.current?.close();
+     },
+-    [index]
++    [index],
+   );
+   const handleRestore = useCallback(function handleRestore() {
+     print({
+@@ -296,16 +297,15 @@ const BottomSheetModalComponent = forwardRef<
+       willUnmountSheet(key);
+       bottomSheetRef.current?.close();
+     },
+-    [key, unmount, willUnmountSheet]
++    [key, unmount, willUnmountSheet],
+   );
+   const handlePortalRender = useCallback(function handlePortalRender(
+-    render: () => void
++    render: () => void,
+   ) {
+     if (mounted.current) {
+       render();
+     }
+-  },
+-  []);
++  }, []);
+   const handleBottomSheetOnChange = useCallback(
+     function handleBottomSheetOnChange(_index: number) {
+       print({
+@@ -322,7 +322,7 @@ const BottomSheetModalComponent = forwardRef<
+         _providedOnChange(_index);
+       }
+     },
+-    [_providedOnChange]
++    [_providedOnChange],
+   );
+   const handleBottomSheetOnClose = useCallback(
+     function handleBottomSheetOnClose() {
+@@ -343,7 +343,7 @@ const BottomSheetModalComponent = forwardRef<
+         unmount();
+       }
+     },
+-    [enableDismissOnClose, unmount]
++    [enableDismissOnClose, unmount],
+   );
+   //#endregion
+ 
+@@ -375,23 +375,25 @@ const BottomSheetModalComponent = forwardRef<
+       handleOnUpdate={handlePortalRender}
+       handleOnUnmount={handlePortalOnUnmount}
+     >
+-      <BottomSheet
+-        {...bottomSheetProps}
+-        ref={bottomSheetRef}
+-        key={key}
+-        index={index}
+-        snapPoints={snapPoints}
+-        enablePanDownToClose={enablePanDownToClose}
+-        animateOnMount={animateOnMount}
+-        containerHeight={containerHeight}
+-        containerOffset={containerOffset}
+-        onChange={handleBottomSheetOnChange}
+-        onClose={handleBottomSheetOnClose}
+-        children={
+-          typeof Content === 'function' ? <Content data={data} /> : Content
+-        }
+-        $modal={true}
+-      />
++      <ContainerComponent>
++        <BottomSheet
++          {...bottomSheetProps}
++          ref={bottomSheetRef}
++          key={key}
++          index={index}
++          snapPoints={snapPoints}
++          enablePanDownToClose={enablePanDownToClose}
++          animateOnMount={animateOnMount}
++          containerHeight={containerHeight}
++          containerOffset={containerOffset}
++          onChange={handleBottomSheetOnChange}
++          onClose={handleBottomSheetOnClose}
++          children={
++            typeof Content === 'function' ? <Content data={data} /> : Content
++          }
++          $modal={true}
++        />
++      </ContainerComponent>
+     </Portal>
+   ) : null;
+ });

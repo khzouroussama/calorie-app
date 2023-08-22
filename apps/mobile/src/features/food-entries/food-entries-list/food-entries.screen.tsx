@@ -4,7 +4,6 @@ import { useFoodEntries } from './use-food-entries';
 import { useCallback, useMemo } from 'react';
 import { FoodEntryCard } from './offer-entry-card/offer-entry-card.component';
 import { spacing } from '@/design-system/theme';
-import { useNavigation } from '@react-navigation/native';
 import type { FoodEntry } from '../food-entries.types';
 import { FoodEntriesFilter } from './food-entries-filter';
 import { FoodEntriesHeader } from './food-entries-header.component';

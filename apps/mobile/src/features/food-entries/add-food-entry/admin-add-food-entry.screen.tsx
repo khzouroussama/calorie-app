@@ -10,7 +10,7 @@ export const AdminAddFoodEntryScreen = () => {
 
   return (
     <Screen style={{ paddingBottom: bottom }}>
-      <FoodEntryForm mutate={addFoodEntry} isLoading={isLoading} />
+      <FoodEntryForm isAdmin mutate={addFoodEntry} isLoading={isLoading} />
     </Screen>
   );
 };

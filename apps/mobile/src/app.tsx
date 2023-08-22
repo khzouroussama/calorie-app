@@ -37,12 +37,14 @@ export const App = () => {
     <AuthProvider>
       <APIProvider>
         <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-          <GestureHandlerRootView style={styles.container}>
-            <BottomSheetModalProvider>
-              <RootNavigator />
-              <FlashMessage position="top" />
-            </BottomSheetModalProvider>
-          </GestureHandlerRootView>
+          <BottomSheetModalProvider>
+            <GestureHandlerRootView style={styles.container}>
+              <BottomSheetModalProvider>
+                <RootNavigator />
+                <FlashMessage position="top" />
+              </BottomSheetModalProvider>
+            </GestureHandlerRootView>
+          </BottomSheetModalProvider>
         </SafeAreaProvider>
       </APIProvider>
     </AuthProvider>

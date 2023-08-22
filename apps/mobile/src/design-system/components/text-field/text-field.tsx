@@ -145,7 +145,7 @@ const styles: {
   },
   inputWrapper: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     borderWidth: 1,
     borderRadius: 4,
     backgroundColor: colors.neutral200,

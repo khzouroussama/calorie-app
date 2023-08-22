@@ -11,6 +11,7 @@ import { queryClient } from '@/shared/service/api';
 import { UseMutateFunction } from '@tanstack/react-query';
 import { FoodEntry } from './food-entries.types';
 import { AxiosError } from 'axios';
+import { SelectUserField } from '@/shared/componenets';
 
 export type FoodEntryFormData = {
   id?: string;
@@ -118,7 +119,18 @@ export const FoodEntryForm = ({
           </Typography>
         </Box>
 
-        <Box>
+        {isAdmin && !update && (
+          <Box>
+            <SelectUserField
+              name="userId"
+              control={control}
+              label="On behalf of user"
+              placeholder="Select a user"
+            />
+          </Box>
+        )}
+
+        <Box sx={{ mt: 'md' }}>
           <Form.TextField
             name="name"
             control={control}
