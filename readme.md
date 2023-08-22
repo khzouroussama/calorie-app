@@ -52,24 +52,31 @@ yarn test
 ## Requirements
 
 [x] Users should be able to manage food entries
+
 [x] A user should be able to add a new food entry
+
 [x] Food entry should contain the following information: Food/product name (i.e. Milk, banana, hamburger), Calorie value (numeric value)
+
 [x] The first screen a user should see is the list of existing food entries
 Calorie limit warning per day
-[ ] Ensure the users can see for which day they reached that limit. Also, ensure it
-is easy to change that limit in the code, per user. You don’t have to create an
-interface for this purpose.
-Admin role with a simple reporting
-[ ] Implement an admin role
-[ ] Admin can see a screen with all added food entries of all users and manage existing
-food entries (read, update, create, delete)
-● Admin should also see the report screen with the following information
-[ ] Number of added entries in the last 7 days vs. added entries the week before
-that. Please Include the current day in those stats
-[ ] The average number of calories added per user for the last 7 days
-[x] A regular user should not be able to access this reporting screen or access its
-data
+
+[x] Ensure the users can see for which day they reached that limit. Also, ensure it
+is easy to change that limit in the code, per user. You don’t have to create an interface for this purpose.
+
+[x] Implement an admin role
+
+[x] Admin can see a screen with all added food entries of all users and manage existing food entries (read, update, create, delete)
+
+[x] Number of added entries in the last 7 days vs. added entries the week before that. Please Include the current day in those stats
+
+[x] The average number of calories added per user for the last 7 days
+
+[x] A regular user should not be able to access this reporting screen or access its data
+
 [x] User authentication/authorization
+
 [x] Users should be able to filter food entries by entry date (date from / date to)
+
 [x] Place filter fields on the same screen where the list of previously added food entries is
+
 [ ] Allow users to take a photo of each food entry
