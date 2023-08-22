@@ -34,7 +34,9 @@ provider:
             - dynamodb:PutItem
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
-          Resource: 'arn:aws:dynamodb:${aws:region}:*:table/${self:provider.environment.DYNAMODB_TABLE}'
+          Resource:
+            - 'arn:aws:dynamodb:${aws:region}:*:table/${self:provider.environment.DYNAMODB_TABLE}'
+            - 'arn:aws:dynamodb:${aws:region}:*:table/${self:provider.environment.DYNAMODB_TABLE}/index/GSI1'
         - Effect: 'Allow'
           Action:
             - 'cognito-idp:AdminAddUserToGroup'
@@ -114,7 +116,7 @@ functions:
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId:
-              ref: CalorieAppApiGatewayAuthorizer
+              Ref: CalorieAppApiGatewayAuthorizer
 
   admin-update-food-entry:
     handler: src/food-entry/admin/update-food-entry/update-food-entry-handler.main
@@ -125,7 +127,7 @@ functions:
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId:
-              ref: CalorieAppApiGatewayAuthorizer
+              Ref: CalorieAppApiGatewayAuthorizer
 
   admin-delete-food-entry:
     handler: src/food-entry/admin/delete-food-entry/delete-food-entry-handler.main
