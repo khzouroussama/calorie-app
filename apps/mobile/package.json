@@ -12,8 +12,7 @@
     "test": "jest --watch --coverage=false --changedSince=origin/main",
     "test:debug": "jest -o --watch --coverage=false",
     "test:final": "jest",
-    "test:updateSnapshots": "jest -u --coverage=false",
-    "postinstall": "patch-package"
+    "test:updateSnapshots": "jest -u --coverage=false"
   },
   "dependencies": {
     "@aws-amplify/ui-react-native": "^1.2.24",
@@ -43,7 +42,6 @@
     "jest": "^29.6.2",
     "jest-expo": "^49.0.0",
     "patch-package": "^8.0.0",
-    "postinstall-postinstall": "^2.1.0",
     "query-string": "^8.1.0",
     "ramda": "^0.29.0",
     "react": "18.2.0",

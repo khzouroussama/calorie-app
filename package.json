@@ -7,13 +7,15 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "check-deps": "check-dependency-version-consistency .",
-    "api:deploy": "cd packages/api && serverless deploy"
+    "api:deploy": "cd packages/api && serverless deploy",
+    "postinstall": "patch-package"
   },
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
   "devDependencies": {
+    "postinstall-postinstall": "^2.1.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "check-dependency-version-consistency": "^4.1.0",
