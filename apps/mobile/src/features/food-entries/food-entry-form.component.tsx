@@ -17,6 +17,7 @@ export type FoodEntryFormData = {
   name: string;
   calories: number;
   consumptionDate: Date;
+  userId?: string;
 };
 
 const schema = yup.object({
@@ -26,16 +27,18 @@ const schema = yup.object({
 });
 
 type FoodEntryFormProps = {
+  isAdmin?: boolean;
+  update?: boolean;
   mutate: UseMutateFunction<FoodEntry, AxiosError, FoodEntryFormData>;
   isLoading: boolean;
-  update?: boolean;
   defaultValues?: FoodEntryFormData;
 };
 
 export const FoodEntryForm = ({
+  isAdmin = false,
+  update,
   mutate,
   isLoading,
-  update,
   defaultValues,
 }: FoodEntryFormProps) => {
   const navigation = useNavigation();
@@ -63,13 +66,18 @@ export const FoodEntryForm = ({
           });
         }, 500);
 
-        queryClient.invalidateQueries({
-          queryKey: ['food-entries'],
-        });
-
-        queryClient.invalidateQueries({
-          queryKey: ['daily-calories'],
-        });
+        if (isAdmin) {
+          queryClient.invalidateQueries({
+            queryKey: ['admin/food-entries'],
+          });
+        } else {
+          queryClient.invalidateQueries({
+            queryKey: ['food-entries'],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ['daily-calories'],
+          });
+        }
 
         navigation.goBack();
       },

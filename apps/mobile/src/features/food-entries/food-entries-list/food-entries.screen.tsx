@@ -1,17 +1,17 @@
-import { Box, Icons, Pressable, Screen, Typography } from '@/design-system';
+import { Box, Screen, Typography } from '@/design-system';
 import { ActivityIndicator, RefreshControl } from 'react-native';
 import { useFoodEntries } from './use-food-entries';
 import { useCallback, useMemo } from 'react';
 import { FoodEntryCard } from './offer-entry-card/offer-entry-card.component';
-import { colors, spacing } from '@/design-system/theme';
+import { spacing } from '@/design-system/theme';
 import { useNavigation } from '@react-navigation/native';
 import type { FoodEntry } from '../food-entries.types';
 import { FoodEntriesFilter } from './food-entries-filter';
 import { FoodEntriesHeader } from './food-entries-header.component';
 import Animated, { Layout } from 'react-native-reanimated';
+import { AddFoodEntryFabButton } from './add-food-entry-button.component';
 
 export const FoodEntriesScreen = () => {
-  const navigation = useNavigation();
   const {
     data,
     status,
@@ -49,7 +49,7 @@ export const FoodEntriesScreen = () => {
           <ActivityIndicator />
         </Box>
       ) : status === 'error' ? (
-        <Box sx={{ flex: 1 }}>
+        <Box sx={{ flex: 1, p: 'md' }}>
           <Typography>An Error happned</Typography>
         </Box>
       ) : (
@@ -76,28 +76,7 @@ export const FoodEntriesScreen = () => {
           }
         />
       )}
-      <AddFoodEntryFabButton
-        onPress={() => navigation.navigate('UserAddFoodEntry')}
-      />
+      <AddFoodEntryFabButton />
     </Screen>
   );
 };
-
-const AddFoodEntryFabButton = ({ onPress }) => (
-  <Box sx={{ position: 'absolute', bottom: spacing.lg, right: spacing.lg }}>
-    <Pressable onPress={onPress}>
-      <Box
-        sx={{
-          borderRadius: 100,
-          width: 52,
-          height: 52,
-          bgColor: 'primary500',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Icons.Plus size={32} color={colors.neutral100} strokeWidth={2} />
-      </Box>
-    </Pressable>
-  </Box>
-);

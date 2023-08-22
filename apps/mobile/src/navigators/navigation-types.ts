@@ -2,8 +2,11 @@ import type { RouteProp as NRouteProp } from '@react-navigation/native';
 
 import type { AuthStackParamList } from './auth-navigator';
 import type { UserFoodEntriesParamList } from './user-food-entries-navigator';
+import { AdminFoodEntriesParamList } from './admin-food-entries-navigator';
 
-export type RootStackParamList = AuthStackParamList & UserFoodEntriesParamList;
+export type RootStackParamList = AuthStackParamList &
+  UserFoodEntriesParamList &
+  AdminFoodEntriesParamList;
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace ReactNavigation {

@@ -6,4 +6,5 @@ export interface FoodEntry {
   photoUrl?: string;
   consumptionDate?: string;
   createdAt?: string;
+  userId?: string;
 }

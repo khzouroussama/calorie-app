@@ -2,6 +2,7 @@ import { FoodEntriesScreen } from '@/features/food-entries';
 import { SettingsScreen } from '@/features/profile';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { tabBarIcon, tabBarLabel } from './navigation.helpers';
+import { AdminFoodEntriesNavigator } from './admin-food-entries-navigator';
 
 type TabParamList = {
   FoodEntries: undefined;
@@ -26,7 +27,7 @@ export const MainAdminTabNavigator = () => {
         <Tab.Screen
           key="FoodEntries"
           name="FoodEntries"
-          component={FoodEntriesScreen}
+          component={AdminFoodEntriesNavigator}
           options={{
             title: 'All Food Entries',
             tabBarIcon: tabBarIcon('Salad'),

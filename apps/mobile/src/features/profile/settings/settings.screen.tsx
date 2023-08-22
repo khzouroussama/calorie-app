@@ -8,13 +8,14 @@ import {
   Typography,
 } from '@/design-system';
 import { colors } from '@/design-system/theme';
-import { queryClient } from '@/shared/service/api';
 import { useStoreActions } from '@/shared/store';
 import { useAuthenticator } from '@aws-amplify/ui-react-native';
+import { useQueryClient } from '@tanstack/react-query';
 
 export const SettingsScreen = () => {
   const { signOut } = useAuthenticator();
   const { reset } = useStoreActions();
+  const queryClient = useQueryClient();
 
   const logout = () => {
     queryClient.clear();

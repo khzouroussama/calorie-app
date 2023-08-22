@@ -5,7 +5,7 @@ import {
   EditFoodEntryScreen,
   FoodEntriesScreen,
 } from '@/features/food-entries';
-import { FoodEntryFormData } from '@/features/food-entries/food-entry-form.componenet';
+import { FoodEntryFormData } from '@/features/food-entries/food-entry-form.component';
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';

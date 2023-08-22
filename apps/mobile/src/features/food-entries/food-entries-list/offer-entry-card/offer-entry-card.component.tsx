@@ -8,6 +8,8 @@ import { Swipeable } from 'react-native-gesture-handler';
 import { useCallback } from 'react';
 import { useDeleteFoodEntry } from './use-delete-food-entry';
 import { FoodEntry } from '../../food-entries.types';
+import { useIsAdmin } from '@/shared/hooks';
+import { useAdminDeleteFoodEntry } from './use-admin-delete-food-entry';
 
 type FoodEntryCardProps = {
   foodEntry: FoodEntry;
@@ -15,12 +17,20 @@ type FoodEntryCardProps = {
 
 export const FoodEntryCard = ({ foodEntry }: FoodEntryCardProps) => {
   const navigation = useNavigation();
-  const { name, calories, consumptionDate } = foodEntry;
+  const { name, calories, consumptionDate, userId } = foodEntry;
   const { mutate: deleteFoodEntry, isLoading } = useDeleteFoodEntry();
+  const { mutate: adminDeleteFoodEntry, isLoading: isAdminDeleteLoading } =
+    useAdminDeleteFoodEntry();
+
+  const isAdmin = useIsAdmin();
 
   const handleDeleteFoodEntry = useCallback(() => {
-    deleteFoodEntry({ id: consumptionDate });
-  }, [consumptionDate, deleteFoodEntry]);
+    if (isAdmin) {
+      adminDeleteFoodEntry({ id: consumptionDate, userId });
+    } else {
+      deleteFoodEntry({ id: consumptionDate });
+    }
+  }, [adminDeleteFoodEntry, consumptionDate, deleteFoodEntry, isAdmin, userId]);
 
   const renderRightActions = useCallback(
     (progress: RNAnimated.AnimatedInterpolation<number>) => {
@@ -48,7 +58,7 @@ export const FoodEntryCard = ({ foodEntry }: FoodEntryCardProps) => {
                 justifyContent: 'center',
               }}
             >
-              {isLoading ? (
+              {isLoading || isAdminDeleteLoading ? (
                 <ActivityIndicator color={colors.angry500} size={28} />
               ) : (
                 <Icons.Trashtabler color={colors.angry500} size={28} />
@@ -58,7 +68,7 @@ export const FoodEntryCard = ({ foodEntry }: FoodEntryCardProps) => {
         </RNAnimated.View>
       );
     },
-    [handleDeleteFoodEntry, isLoading],
+    [handleDeleteFoodEntry, isAdminDeleteLoading, isLoading],
   );
 
   return (
@@ -67,12 +77,16 @@ export const FoodEntryCard = ({ foodEntry }: FoodEntryCardProps) => {
         <Pressable
           activeScale={0.98}
           onPress={() => {
-            navigation.navigate('UserEditFoodEntry', {
-              id: new Date(consumptionDate).toISOString(),
-              name,
-              calories,
-              consumptionDate,
-            });
+            navigation.navigate(
+              isAdmin ? 'AdminEditFoodEntry' : 'UserEditFoodEntry',
+              {
+                id: new Date(consumptionDate).toISOString(),
+                name,
+                calories,
+                consumptionDate,
+                userId,
+              },
+            );
           }}
         >
           <Card
