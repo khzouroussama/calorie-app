@@ -15,6 +15,14 @@ export const stringifyQueryParams = <T extends KeyParams>(params?: T) => {
   return queryString.stringify(params, { skipNull: true });
 };
 
+export const buildFormData = (params: Record<string, unknown>) => {
+  const formData = new FormData();
+  Object.entries(params).forEach(([key, value]) => {
+    formData.append(key, value as any);
+  });
+  return formData;
+};
+
 export function useAddAuthHeader() {
   const [isAdmin, setIsAdmin] = useState(false);
   const { user, isPending, authStatus } = useAuthenticator((context) => [

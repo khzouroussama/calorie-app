@@ -79,4 +79,4 @@ is easy to change that limit in the code, per user. You don’t have to create a
 
 [x] Place filter fields on the same screen where the list of previously added food entries is
 
-[ ] Allow users to take a photo of each food entry
+[x] Allow users to take a photo of each food entry

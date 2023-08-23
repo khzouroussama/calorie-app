@@ -7,10 +7,11 @@ import {
 } from '@calorie-app/http';
 import { FoodEntryModel, createFoodEntry } from '../food-entry.model';
 import { object, string } from 'yup';
+import { uploadFoodEntryPhoto } from '../food-entry.helpers';
 
-type Params = BodyParams<Omit<FoodEntryModel, 'id'>>;
+type Params = BodyParams<Omit<FoodEntryModel & { photo: any }, 'id'>>;
 
-export const main = createHandler<Params>(async (event, context) => {
+export const main = createHandler<Params>(async (event) => {
   try {
     const result = await createFoodEntry(
       event.requestContext.authorizer?.claims?.sub,
@@ -19,6 +20,7 @@ export const main = createHandler<Params>(async (event, context) => {
         name: event.body.name,
         calories: event.body.calories,
         consumptionDate: new Date(event.body.consumptionDate).toISOString(),
+        photoUrl: await uploadFoodEntryPhoto(event.body?.photo),
       },
     );
 
@@ -34,6 +36,13 @@ main.use([
       name: string().required(),
       calories: string().required(),
       consumptionDate: string().required(),
+      photo: object({
+        uri: string().required(),
+        name: string().required(),
+        type: string().optional(),
+      })
+        .optional()
+        .nullable(),
     }),
   }),
 ]);

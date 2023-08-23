@@ -19,6 +19,12 @@ export type FoodEntryFormData = {
   calories: number;
   consumptionDate: Date;
   userId?: string;
+
+  photo?: {
+    uri: string;
+    name: string;
+    type: string;
+  };
 };
 
 const schema = yup.object({
@@ -101,18 +107,11 @@ export const FoodEntryForm = ({
         contentContainerStyle={{ paddingHorizontal: spacing.md }}
       >
         <Box sx={{ my: 'xl', alignItems: 'center', gap: 'sm' }}>
-          <Box
-            sx={{
-              bgColor: 'secondary500',
-              width: 92,
-              height: 92,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 100,
-            }}
-          >
-            <Icons.Salad size={52} color={colors.neutral100} />
-          </Box>
+          <Form.PictureField
+            name="photo"
+            control={control}
+            defaultIcon={Icons.Salad}
+          />
 
           <Typography variant="subheading" size="sm" color="secondary500">
             Add Image

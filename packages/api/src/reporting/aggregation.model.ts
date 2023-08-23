@@ -2,7 +2,7 @@ import { Item, ItemKeys, createItem, getItem, query } from '@calorie-app/db';
 import { AttributeValue } from '@aws-sdk/client-dynamodb';
 import { encodeCursor, paginateParams } from '@calorie-app/http';
 import { User, UserKeys } from '@/users/user.model';
-import { get14DaysAgoDate, getNDaysAgoDate } from './reporting.helpers';
+import { getNDaysAgoDate } from './reporting.helpers';
 
 // Global Entry Count
 
@@ -63,7 +63,10 @@ export interface UserCalorieCountModel {
 export class UserCalorieCountKeys extends ItemKeys {
   static ENTITY_PREFIX = 'AGGREGATION#CALORIES';
 
-  constructor(private userId: string, private date: string) {
+  constructor(
+    private userId: string,
+    private date: string,
+  ) {
     super();
   }
 

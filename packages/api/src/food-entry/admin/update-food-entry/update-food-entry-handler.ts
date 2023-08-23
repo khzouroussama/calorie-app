@@ -1,3 +1,4 @@
+import { uploadFoodEntryPhoto } from '@/food-entry/food-entry.helpers';
 import { FoodEntryModel, updateFoodEntry } from '@/food-entry/food-entry.model';
 import {
   BodyParams,
@@ -9,7 +10,7 @@ import {
 } from '@calorie-app/http';
 
 type Params = PathParams<{ id: string }> &
-  BodyParams<Omit<FoodEntryModel, 'id'>>;
+  BodyParams<Omit<FoodEntryModel & { photo: any }, 'id'>>;
 
 export const main = createHandler<Params>(async (event, context) => {
   const [userId, foodEntryId] = event.pathParameters.id.split('_');
@@ -17,6 +18,7 @@ export const main = createHandler<Params>(async (event, context) => {
     const result = await updateFoodEntry(userId, {
       ...event.body,
       id: foodEntryId,
+      photoUrl: await uploadFoodEntryPhoto(event.body?.photo),
     });
 
     return httpResponse(result);

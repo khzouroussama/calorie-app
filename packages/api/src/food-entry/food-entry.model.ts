@@ -16,6 +16,7 @@ import {
   UserCalorieCount,
 } from '@/reporting/aggregation.model';
 import { encodeCursor, paginateParams } from '@calorie-app/http';
+import { getFoodEntrySignedUrl } from './food-entry.helpers';
 
 export interface FoodEntryModel {
   /**  ISOfstring of the date of when the food entry was created */
@@ -319,8 +320,17 @@ export const getUserFoodEntries = async (
     ...paginateParams(cursor, limit),
   });
 
+  const foodEntries = result.Items?.map((item) => FoodEntry.fromItem(item));
+
+  const foodEntriesWithSignedUrl = await Promise.all(
+    foodEntries?.map(async (item) => ({
+      ...item,
+      photoUrl: await getFoodEntrySignedUrl(item.photoUrl),
+    }))!,
+  );
+
   return {
-    foodEntries: result.Items?.map((item) => FoodEntry.fromItem(item)),
+    foodEntries: foodEntriesWithSignedUrl,
     nextCursor: result.LastEvaluatedKey
       ? encodeCursor(result.LastEvaluatedKey)
       : null,
@@ -365,8 +375,17 @@ export const getFoodEntries = async (
     ...paginateParams(cursor, limit),
   });
 
+  const foodEntries = result.Items?.map((item) => FoodEntry.fromItem(item));
+
+  const foodEntriesWithSignedUrl = await Promise.all(
+    foodEntries?.map(async (item) => ({
+      ...item,
+      photoUrl: await getFoodEntrySignedUrl(item.photoUrl),
+    }))!,
+  );
+
   return {
-    foodEntries: result.Items?.map((item) => FoodEntry.fromItem(item)),
+    foodEntries: foodEntriesWithSignedUrl,
     nextCursor: result.LastEvaluatedKey
       ? encodeCursor(result.LastEvaluatedKey)
       : null,

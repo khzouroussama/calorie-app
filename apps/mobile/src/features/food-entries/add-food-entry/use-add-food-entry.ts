@@ -9,6 +9,9 @@ type Variables = FoodEntryFormData;
 type Response = FoodEntry;
 
 export const useAddFoodEntry = createMutation<Response, Variables, AxiosError>({
-  mutationFn: async (variables) =>
-    axios.post('food-entries', variables).then((response) => response.data),
+  mutationFn: async (variables) => {
+    return axios
+      .post('food-entries', variables)
+      .then((response) => response.data);
+  },
 });

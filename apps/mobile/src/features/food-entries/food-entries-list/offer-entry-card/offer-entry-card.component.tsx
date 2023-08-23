@@ -10,6 +10,7 @@ import { useDeleteFoodEntry } from './use-delete-food-entry';
 import { FoodEntry } from '../../food-entries.types';
 import { useIsAdmin } from '@/shared/hooks';
 import { useAdminDeleteFoodEntry } from './use-admin-delete-food-entry';
+import { pair } from 'ramda';
 
 type FoodEntryCardProps = {
   foodEntry: FoodEntry;
@@ -17,7 +18,7 @@ type FoodEntryCardProps = {
 
 export const FoodEntryCard = ({ foodEntry }: FoodEntryCardProps) => {
   const navigation = useNavigation();
-  const { name, calories, consumptionDate, userId } = foodEntry;
+  const { name, calories, consumptionDate, userId, photoUrl } = foodEntry;
   const { mutate: deleteFoodEntry, isLoading } = useDeleteFoodEntry();
   const { mutate: adminDeleteFoodEntry, isLoading: isAdminDeleteLoading } =
     useAdminDeleteFoodEntry();
@@ -85,6 +86,9 @@ export const FoodEntryCard = ({ foodEntry }: FoodEntryCardProps) => {
                 calories,
                 consumptionDate,
                 userId,
+                photo: {
+                  uri: photoUrl,
+                },
               },
             );
           }}
