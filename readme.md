@@ -80,3 +80,8 @@ is easy to change that limit in the code, per user. You don’t have to create a
 [x] Place filter fields on the same screen where the list of previously added food entries is
 
 [x] Allow users to take a photo of each food entry
+
+### Extra requeriments
+
+[ ] Show my daily limit chart on the home screen
+[ ] Allow changing the
