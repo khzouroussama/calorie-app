@@ -114,7 +114,7 @@ export const updateUserDailyLimit = async (
   await updateItem(new UserKeys(userId), {
     UpdateExpression: 'SET #limit = :newLimit',
     ExpressionAttributeValues: {
-      ':newLimit': { N: `newLimit` },
+      ':newLimit': { N: `${+newLimit}` },
     },
     ExpressionAttributeNames: {
       '#limit': 'calorieLimit',

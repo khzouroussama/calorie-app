@@ -15,10 +15,19 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import axios from 'axios';
 import { useMe } from '../use-me';
+import { useUpdateDailyLimit } from './use-update-daily-limit';
+import { useEffect, useState } from 'react';
+import { showMessage } from 'react-native-flash-message';
 
 export const SettingsScreen = () => {
-  const { data, isLoading } = useMe();
+  const { data, isLoading: isProfileLoading, refetch, isRefetching } = useMe();
   const userData = data?.data?.data?.user;
+  const [dailyLimit, setDailyLimit] = useState<number>(0);
+
+  const { mutate: updateDailyLimit, isLoading: isUpdatingDailyLimit } =
+    useUpdateDailyLimit();
+
+  const isLoading = isProfileLoading || isUpdatingDailyLimit || isRefetching;
 
   const isAdmin = useIsAdmin();
   const { signOut } = useAuthenticator();
@@ -31,6 +40,39 @@ export const SettingsScreen = () => {
     reset();
     signOut();
   };
+
+  const handleUpdateDailyLimit = () => {
+    updateDailyLimit(
+      { newLimit: dailyLimit },
+      {
+        onSuccess: () => {
+          showMessage({
+            message: 'Daily limit updated',
+            type: 'success',
+          });
+
+          queryClient.invalidateQueries({
+            queryKey: ['me'],
+          });
+
+          queryClient.invalidateQueries({
+            queryKey: ['daily-calories'],
+          });
+        },
+        onError: () => {
+          refetch();
+          showMessage({
+            message: 'Something went wrong',
+            type: 'danger',
+          });
+        },
+      },
+    );
+  };
+
+  useEffect(() => {
+    setDailyLimit(userData?.calorieLimit || 0);
+  }, [userData]);
 
   return (
     <Screen sx={{ p: 'md' }}>
@@ -52,9 +94,25 @@ export const SettingsScreen = () => {
           <Typography style={{ textAlign: 'center' }}>
             My Daily Calorie limit
           </Typography>
-          <Box sx={{ gap: 'md' }}>
-            <TextField value="2100" />
-            <Button variant="secondary" icon={Icons.Bolt}>
+          <Box
+            sx={{ gap: 'md' }}
+            style={{
+              opacity: isLoading ? 0.5 : 1,
+            }}
+            pointerEvents={isLoading ? 'none' : 'auto'}
+          >
+            <TextField
+              value={String(dailyLimit)}
+              keyboardType="numeric"
+              onChangeText={(txt) => setDailyLimit(+txt)}
+            />
+            <Button
+              disabled={isLoading}
+              loading={isLoading}
+              variant="secondary"
+              icon={Icons.Bolt}
+              onPress={handleUpdateDailyLimit}
+            >
               Update
             </Button>
           </Box>

@@ -50,7 +50,11 @@ export const FoodEntryForm = ({
 }: FoodEntryFormProps) => {
   const navigation = useNavigation();
 
-  const { control, handleSubmit } = useForm<FoodEntryFormData>({
+  const {
+    control,
+    handleSubmit,
+    formState: { isDirty },
+  } = useForm<FoodEntryFormData>({
     resolver: yupResolver(schema),
     defaultValues: {
       ...(update
@@ -76,6 +80,14 @@ export const FoodEntryForm = ({
         if (isAdmin) {
           queryClient.invalidateQueries({
             queryKey: ['admin/food-entries'],
+          });
+
+          queryClient.invalidateQueries({
+            queryKey: ['admin/user-reports'],
+          });
+
+          queryClient.invalidateQueries({
+            queryKey: ['admin/global-reports'],
           });
         } else {
           queryClient.invalidateQueries({
@@ -165,6 +177,7 @@ export const FoodEntryForm = ({
       </ScrollView>
       <Box sx={{ px: 'md' }}>
         <Button
+          disabled={isLoading || !isDirty}
           loading={isLoading}
           onPress={handleSubmit(onSubmit)}
           icon={Icons.DeviceFloppy}

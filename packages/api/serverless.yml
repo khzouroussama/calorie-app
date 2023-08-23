@@ -210,7 +210,7 @@ functions:
     events:
       - http:
           path: /v1/update-daily-limit
-          method: get
+          method: put
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId:

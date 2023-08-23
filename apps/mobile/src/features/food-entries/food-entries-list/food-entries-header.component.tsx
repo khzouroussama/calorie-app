@@ -41,7 +41,11 @@ export const FoodEntriesHeader = () => {
             data={{
               labels: ['Consumed'], // optional
               data: [
-                (todaysReport?.totalOfCalories || 0) / user?.calorieLimit || 1,
+                Math.min(
+                  (todaysReport?.totalOfCalories || 0) / user?.calorieLimit ||
+                    1,
+                  1,
+                ),
               ],
             }}
             width={90}
