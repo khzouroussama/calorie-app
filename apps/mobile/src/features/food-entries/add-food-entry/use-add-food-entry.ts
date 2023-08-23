@@ -4,6 +4,7 @@ import { createMutation } from 'react-query-kit';
 import axios from 'axios';
 import { FoodEntry } from '../food-entries.types';
 import { FoodEntryFormData } from '../food-entry-form.component';
+import { store } from '@/shared/store/store';
 
 type Variables = FoodEntryFormData;
 type Response = FoodEntry;
@@ -13,5 +14,8 @@ export const useAddFoodEntry = createMutation<Response, Variables, AxiosError>({
     return axios
       .post('food-entries', variables)
       .then((response) => response.data);
+  },
+  onSettled: () => {
+    store.getState().actions.onUserFoodEntryFilterReset();
   },
 });

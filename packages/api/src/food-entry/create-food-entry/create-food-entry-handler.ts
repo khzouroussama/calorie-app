@@ -37,9 +37,9 @@ main.use([
       calories: string().required(),
       consumptionDate: string().required(),
       photo: object({
-        uri: string().required(),
-        name: string().required(),
-        type: string().optional(),
+        uri: string().optional().nullable(),
+        name: string().optional().nullable(),
+        type: string().optional().nullable(),
       })
         .optional()
         .nullable(),

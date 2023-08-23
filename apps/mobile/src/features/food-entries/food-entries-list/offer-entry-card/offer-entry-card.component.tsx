@@ -11,6 +11,7 @@ import { FoodEntry } from '../../food-entries.types';
 import { useIsAdmin } from '@/shared/hooks';
 import { useAdminDeleteFoodEntry } from './use-admin-delete-food-entry';
 import { pair } from 'ramda';
+import { Image } from 'react-native';
 
 type FoodEntryCardProps = {
   foodEntry: FoodEntry;
@@ -111,9 +112,14 @@ export const FoodEntryCard = ({ foodEntry }: FoodEntryCardProps) => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   mr: 'sm',
+                  overflow: 'hidden',
                 }}
               >
-                <Icons.Buguette color={colors.neutral100} size={32} />
+                {photoUrl ? (
+                  <Image source={{ uri: photoUrl }} height={50} width={50} />
+                ) : (
+                  <Icons.Buguette color={colors.neutral100} size={32} />
+                )}
               </Box>
               <Box>
                 <Typography color="neutral700" variant="heading" size="md">

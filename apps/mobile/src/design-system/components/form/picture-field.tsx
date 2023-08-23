@@ -2,7 +2,7 @@ import { Control, RegisterOptions, useController } from 'react-hook-form';
 
 import React from 'react';
 import { DateTimeFieldProps } from '../date-time-field';
-import { Image } from 'react-native';
+import { ActivityIndicator, Image } from 'react-native';
 import { Pressable } from '../pressable';
 import * as ImagePicker from 'expo-image-picker';
 import Box from '../box/box';
@@ -33,6 +33,7 @@ const isBase64Uri = (uri: string) => {
 };
 
 export function FormPicturField(props: FormPictureFieldProps) {
+  const [loading, setLoading] = React.useState(true);
   const { name, control, rules, onChange, imagePickerOptions, ...inputProps } =
     props;
 
@@ -68,8 +69,16 @@ export function FormPicturField(props: FormPictureFieldProps) {
   return (
     <Pressable onPress={handleChange}>
       {field.value?.uri ? (
-        <Box sx={{ borderRadius: 100, overflow: 'hidden' }}>
+        <Box
+          sx={{
+            borderRadius: 100,
+            overflow: 'hidden',
+            bgColor: 'neutral300',
+            alignItems: 'center',
+          }}
+        >
           <Image
+            onLoadEnd={() => setLoading(false)}
             width={92}
             height={92}
             source={{
@@ -79,6 +88,13 @@ export function FormPicturField(props: FormPictureFieldProps) {
             }}
             {...inputProps}
           />
+
+          {loading && (
+            <ActivityIndicator
+              color={colors.secondary500}
+              style={{ position: 'absolute', height: '100%', flex: 1 }}
+            />
+          )}
         </Box>
       ) : (
         <Box
