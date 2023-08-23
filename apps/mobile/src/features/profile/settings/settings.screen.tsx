@@ -12,12 +12,15 @@ import { useStoreActions } from '@/shared/store';
 import { useAuthenticator } from '@aws-amplify/ui-react-native';
 import { useQueryClient } from '@tanstack/react-query';
 
+import axios from 'axios';
+
 export const SettingsScreen = () => {
   const { signOut } = useAuthenticator();
   const { reset } = useStoreActions();
   const queryClient = useQueryClient();
 
   const logout = () => {
+    axios.defaults.headers.common.Authorization = undefined;
     queryClient.clear();
     reset();
     signOut();

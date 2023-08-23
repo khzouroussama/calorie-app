@@ -14,11 +14,13 @@ import { colors } from '@/design-system/theme';
 import { MainUserTabNavigator } from './main-user-tab-navigator';
 import { MainAdminTabNavigator } from './main-admin-tab-navigator';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useIsAdmin } from '@/shared/hooks';
 
 const Stack = createNativeStackNavigator();
 
 export const RootNavigator = () => {
-  const { isAdmin, authStatus } = useAddAuthHeader();
+  const { authStatus, isReady } = useAddAuthHeader();
+  const isAdmin = useIsAdmin();
 
   useEffect(() => {
     if (authStatus !== 'configuring') (async () => SplashScreen.hideAsync())();
@@ -32,7 +34,7 @@ export const RootNavigator = () => {
         SignIn: (props) => <Authenticator.SignIn {...props} />,
       }}
     >
-      {authStatus === 'configuring' ? null : (
+      {!isReady ? null : (
         <Animated.View
           entering={FadeInDown}
           exiting={FadeInDown}

@@ -24,7 +24,7 @@ export const buildFormData = (params: Record<string, unknown>) => {
 };
 
 export function useAddAuthHeader() {
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const { user, isPending, authStatus } = useAuthenticator((context) => [
     context.user,
     context.authStatus,
@@ -35,17 +35,14 @@ export function useAddAuthHeader() {
     if (authStatus !== 'authenticated') return;
     if (user) {
       const idToken = user.getSignInUserSession().getIdToken();
+
+      if (!idToken?.payload) return;
+
       axios.defaults.headers.common.Authorization = idToken.getJwtToken();
 
-      if (
-        idToken.payload['cognito:groups']?.includes?.(
-          `admin-${process.env?.EXPO_PUBLIC_STAGE?.toLowerCase()}`,
-        )
-      ) {
-        setIsAdmin(true);
-      }
+      if (!isReady) setIsReady(true);
     }
-  }, [authStatus, user]);
+  }, [authStatus, isReady, user]);
 
-  return { isPending, authStatus, isAdmin };
+  return { isPending, authStatus, isReady };
 }
