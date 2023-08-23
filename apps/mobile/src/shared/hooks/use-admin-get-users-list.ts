@@ -2,17 +2,12 @@ import axios from 'axios';
 import type { AxiosError } from 'axios';
 import { createInfiniteQuery } from 'react-query-kit';
 import { stringifyQueryParams } from '@/shared/service/api';
-
-export type User = {
-  id: string;
-  calorieLimit: number;
-  email: string;
-};
+import { UserModal } from '@/features/profile';
 
 type Response = {
   data: {
     data: {
-      users: User[];
+      users: UserModal[];
       nextCursor: string;
     };
   };

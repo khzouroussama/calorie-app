@@ -9,18 +9,18 @@ import {
 } from '@react-navigation/native';
 
 import { Authenticator } from '@aws-amplify/ui-react-native';
-import { useAddAuthHeader } from '@/shared/service/api';
 import { colors } from '@/design-system/theme';
 import { MainUserTabNavigator } from './main-user-tab-navigator';
 import { MainAdminTabNavigator } from './main-admin-tab-navigator';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useIsAdmin } from '@/shared/hooks';
 import { Box, Icons, Typography } from '@/design-system';
+import { useBootstrapApp } from '@/shared/hooks/use-bootstrap-app';
 
 const Stack = createNativeStackNavigator();
 
 export const RootNavigator = () => {
-  const { authStatus, isReady } = useAddAuthHeader();
+  const { authStatus, isReady } = useBootstrapApp();
   const isAdmin = useIsAdmin();
 
   useEffect(() => {

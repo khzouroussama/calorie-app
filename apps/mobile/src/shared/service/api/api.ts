@@ -22,27 +22,3 @@ export const buildFormData = (params: Record<string, unknown>) => {
   });
   return formData;
 };
-
-export function useAddAuthHeader() {
-  const [isReady, setIsReady] = useState(false);
-  const { user, isPending, authStatus } = useAuthenticator((context) => [
-    context.user,
-    context.authStatus,
-    context.isPending,
-  ]);
-
-  useEffect(() => {
-    if (authStatus !== 'authenticated') return;
-    if (user) {
-      const idToken = user.getSignInUserSession().getIdToken();
-
-      if (!idToken?.payload) return;
-
-      axios.defaults.headers.common.Authorization = idToken.getJwtToken();
-
-      if (!isReady) setIsReady(true);
-    }
-  }, [authStatus, isReady, user]);
-
-  return { isPending, authStatus, isReady };
-}

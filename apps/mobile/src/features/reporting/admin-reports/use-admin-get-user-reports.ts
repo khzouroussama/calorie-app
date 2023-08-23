@@ -2,13 +2,7 @@ import { stringifyQueryParams } from '@/shared/service/api';
 import axios from 'axios';
 import type { AxiosError } from 'axios';
 import { createQuery } from 'react-query-kit';
-
-export interface UserCalorieCountModel {
-  userId: string;
-  // a date only string in the format of YYYY-MM-DD
-  date: string;
-  totalOfCalories?: number;
-}
+import { UserCalorieCountModel } from '../reporting.types';
 
 type Response = {
   data: {
