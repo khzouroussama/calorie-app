@@ -171,7 +171,10 @@ export const UserReportCard = ({ user }: UserReportCardProps) => {
           </Typography>
 
           <Typography variant="bold" size="xl" color="primary500">
-            {results.reduce((acc, report) => acc + report.totalOfCalories, 0)}{' '}
+            {(
+              results.reduce((acc, report) => acc + report.totalOfCalories, 0) /
+              7
+            ).toFixed(2)}{' '}
             Calories
           </Typography>
         </Box>
