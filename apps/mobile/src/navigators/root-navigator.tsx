@@ -15,6 +15,7 @@ import { MainUserTabNavigator } from './main-user-tab-navigator';
 import { MainAdminTabNavigator } from './main-admin-tab-navigator';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useIsAdmin } from '@/shared/hooks';
+import { Box, Icons, Typography } from '@/design-system';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,7 +32,26 @@ export const RootNavigator = () => {
       loginMechanisms={['email']}
       signUpAttributes={['picture']}
       components={{
-        SignIn: (props) => <Authenticator.SignIn {...props} />,
+        SignIn: (props) => (
+          <Authenticator.SignIn
+            {...props}
+            Header={() => (
+              <Box
+                sx={{ alignItems: 'center', pb: 'lg' }}
+                style={{ marginTop: -80 }}
+              >
+                <Icons.Bolt
+                  size={64}
+                  color={colors.primary400}
+                  strokeWidth={1.5}
+                />
+                <Typography variant="heading" color="primary400">
+                  Calorie App
+                </Typography>
+              </Box>
+            )}
+          />
+        ),
       }}
     >
       {!isReady ? null : (
