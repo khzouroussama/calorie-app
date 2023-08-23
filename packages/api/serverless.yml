@@ -194,6 +194,28 @@ functions:
             authorizerId:
               Ref: CalorieAppApiGatewayAuthorizer
 
+  me:
+    handler: src/users/get-user/get-user-handler.
+    events:
+      - http:
+          path: /v1/me
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CalorieAppApiGatewayAuthorizer
+
+  update-daily-limit:
+    handler: src/users/update-daily-limit/update-daily-limit-handler.main
+    events:
+      - http:
+          path: /v1/me
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CalorieAppApiGatewayAuthorizer
+
 custom:
   esbuild:
     bundle: true

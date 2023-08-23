@@ -1,4 +1,11 @@
-import { Item, ItemKeys, createItem, getItem, query } from '@calorie-app/db';
+import {
+  Item,
+  ItemKeys,
+  createItem,
+  getItem,
+  query,
+  updateItem,
+} from '@calorie-app/db';
 import { UserRoles } from './user.types';
 import { AttributeValue } from '@aws-sdk/client-dynamodb';
 import { encodeCursor, paginateParams } from '@calorie-app/http';
@@ -98,4 +105,21 @@ export const getAllUsers = async (cursor?: string, limit?: number) => {
       ? encodeCursor(result.LastEvaluatedKey)
       : null,
   };
+};
+
+export const updateUserDailyLimit = async (
+  userId: string,
+  newLimit: number,
+) => {
+  await updateItem(new UserKeys(userId), {
+    UpdateExpression: 'SET #limit = :newLimit',
+    ExpressionAttributeValues: {
+      ':newLimit': { N: `newLimit` },
+    },
+    ExpressionAttributeNames: {
+      '#limit': 'calorieLimit',
+    },
+  });
+
+  return { success: true };
 };

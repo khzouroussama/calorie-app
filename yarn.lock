@@ -4679,25 +4679,12 @@
   resolved "https://registry.npmjs.org/@middy/core/-/core-4.6.0.tgz"
   integrity sha512-GuiUcFWMFCBxjx2RYAq1KqzvtY6M6JJI4B9WujKhWZ8a0PE8Y48rdt7Pxld2cugnXZvb6LeCbJiQgqWMr09ALA==
 
-"@middy/http-header-normalizer@^4.6.0":
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/@middy/http-header-normalizer/-/http-header-normalizer-4.6.0.tgz#f82c356ff93534ba5a3e559546aed292a4df9865"
-  integrity sha512-g5qQe0adaf3O3v3MfjlCH7AmYaiei2wZKc1R5j7gWPz8c3/1y9f2l+QDWmGHOx73smPZkaExl6uTD2KDCSG6TQ==
-
 "@middy/http-json-body-parser@^4.6.0":
   version "4.6.0"
   resolved "https://registry.npmjs.org/@middy/http-json-body-parser/-/http-json-body-parser-4.6.0.tgz"
   integrity sha512-Jofywyz55VMHtsrtOrJGHY6zq+YcBi03uouXAW2wYE2mgOp+U2L2S+QGrB76jYa4n/n/O16k74KiTwo4T8k6Mg==
   dependencies:
     "@middy/util" "4.6.0"
-
-"@middy/http-multipart-body-parser@^4.6.0":
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/@middy/http-multipart-body-parser/-/http-multipart-body-parser-4.6.0.tgz#a4724a26414222567fa452b0b1b255bc5e4a2adf"
-  integrity sha512-wlTr6hWyfLRoaFd6N+xpe69dRxaF83gS2I/INvZKwLJa8UnlPeHwlhy95RumVofvFwGWsIPrkE3yhUOaxxEivQ==
-  dependencies:
-    "@middy/util" "4.6.0"
-    busboy "1.6.0"
 
 "@middy/util@4.6.0":
   version "4.6.0"
@@ -6893,13 +6880,6 @@ bundle-name@^3.0.0:
   integrity sha512-PKA4BeSvBpQKQ8iPOGCSiell+N8P+Tf1DlwqmYhpe2gAhKPHn8EYOxVT+ShuGmhg8lN8XiSlS80yiExKXrURlw==
   dependencies:
     run-applescript "^5.0.0"
-
-busboy@1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/busboy/-/busboy-1.6.0.tgz#966ea36a9502e43cdb9146962523b92f531f6893"
-  integrity sha512-8SFQbg/0hQ9xy3UNTB0YEnsNBbWfhf7RtnzpL7TkBiTBRfrQ9Fxcnz7VJsleJpyp6rVLvXiuORqjlHi5q+PYuA==
-  dependencies:
-    streamsearch "^1.1.0"
 
 bytes@3.0.0:
   version "3.0.0"
@@ -13341,11 +13321,6 @@ stream-buffers@2.2.x:
   version "2.2.0"
   resolved "https://registry.npmjs.org/stream-buffers/-/stream-buffers-2.2.0.tgz"
   integrity sha512-uyQK/mx5QjHun80FLJTfaWE7JtwfRMKBLkMne6udYOmvH0CawotVa7TfgYHzAnpphn4+TweIx1QKMnRIbipmUg==
-
-streamsearch@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/streamsearch/-/streamsearch-1.1.0.tgz#404dd1e2247ca94af554e841a8ef0eaa238da764"
-  integrity sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==
 
 strict-uri-encode@^2.0.0:
   version "2.0.0"
