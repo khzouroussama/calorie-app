@@ -81,7 +81,8 @@ is easy to change that limit in the code, per user. You don’t have to create a
 
 [x] Allow users to take a photo of each food entry
 
-### Extra requeriments
+### Extra requirements
 
 [ ] Show my daily limit chart on the home screen
+
 [ ] Allow changing the

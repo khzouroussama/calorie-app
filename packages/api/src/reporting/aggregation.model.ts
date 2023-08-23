@@ -63,10 +63,7 @@ export interface UserCalorieCountModel {
 export class UserCalorieCountKeys extends ItemKeys {
   static ENTITY_PREFIX = 'AGGREGATION#CALORIES';
 
-  constructor(
-    private userId: string,
-    private date: string,
-  ) {
+  constructor(private userId: string, private date: string) {
     super();
   }
 

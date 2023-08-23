@@ -14,8 +14,12 @@ import { useAuthenticator } from '@aws-amplify/ui-react-native';
 import { useQueryClient } from '@tanstack/react-query';
 
 import axios from 'axios';
+import { useMe } from '../use-me';
 
 export const SettingsScreen = () => {
+  const { data, isLoading } = useMe();
+  const userData = data?.data?.data?.user;
+
   const isAdmin = useIsAdmin();
   const { signOut } = useAuthenticator();
   const { reset } = useStoreActions();
@@ -30,6 +34,12 @@ export const SettingsScreen = () => {
 
   return (
     <Screen sx={{ p: 'md' }}>
+      <Card>
+        <Typography style={{ textAlign: 'center' }}>
+          {userData?.email || ''}
+        </Typography>
+      </Card>
+
       {!isAdmin && (
         <Card sx={{ mt: 'sm' }}>
           <Box sx={{ alignItems: 'center' }}>
@@ -51,7 +61,7 @@ export const SettingsScreen = () => {
         </Card>
       )}
 
-      <Card sx={{ mt: 'lg' }}>
+      <Card sx={{ mt: 'sm' }}>
         <Typography style={{ textAlign: 'center' }}>
           Want to logout ?
         </Typography>

@@ -16,6 +16,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useIsAdmin } from '@/shared/hooks';
 import { Box, Icons, Typography } from '@/design-system';
 import { useBootstrapApp } from '@/shared/hooks/use-bootstrap-app';
+import { ActivityIndicator } from 'react-native';
 
 const Stack = createNativeStackNavigator();
 
@@ -54,7 +55,11 @@ export const RootNavigator = () => {
         ),
       }}
     >
-      {!isReady ? null : (
+      {!isReady ? (
+        <Box sx={{ alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator />
+        </Box>
+      ) : (
         <Animated.View
           entering={FadeInDown}
           exiting={FadeInDown}

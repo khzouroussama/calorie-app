@@ -195,7 +195,7 @@ functions:
               Ref: CalorieAppApiGatewayAuthorizer
 
   me:
-    handler: src/users/get-user/get-user-handler.
+    handler: src/users/get-user/get-user-handler.main
     events:
       - http:
           path: /v1/me
@@ -209,7 +209,7 @@ functions:
     handler: src/users/update-daily-limit/update-daily-limit-handler.main
     events:
       - http:
-          path: /v1/me
+          path: /v1/update-daily-limit
           method: get
           authorizer:
             type: COGNITO_USER_POOLS
