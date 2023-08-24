@@ -66,7 +66,7 @@ GSI1SK: ?
 
 | Entity Type            | Partition Key (PK)              | Sort Key (SK)          | Attributes                                                              | GSI1PK (Partition Key) | GSI1SK (Sort Key) |
 | ---------------------- | ------------------------------- | ---------------------- | ----------------------------------------------------------------------- | ---------------------- | ----------------- |
-| User                   | USER#\<UserId\>                 | PROFILE#\<UserId>      | Role (Admin/User), DailyCalorieLimit, Other user-specific attributes... | -                      | -                 |
+| User                   | USER#\<UserId\>                 | PROFILE#\<UserId>      | Role (Admin/User), DailyCalorieLimit, Other user-specific attributes... | USERS                  | -                 |
 | Food Entry             | USER#\<UserId\>                 | FOODENTRY#\<DateTime\> | Date, FoodName, Calories, PhotoS3Key                                    | FOODENTRY              | \<Date\>          |
 | Aggregation (Entries)  | AGGREGATION#ENTRIES             | \<Date\>               | Count (Number of entries for that day)                                  | -                      | -                 |
 | Aggregation (Calories) | AGGREGATION#CALORIES#\<UserId\> | \<Date\>               | TotalCalories (Total calories for that day)                             | -                      | -                 |

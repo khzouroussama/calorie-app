@@ -38,8 +38,6 @@ export const DateTimeField = memo(
       hideDatePicker();
     };
 
-    console.log({ value });
-
     return (
       <Box>
         <Pressable onPress={showDatePicker}>
