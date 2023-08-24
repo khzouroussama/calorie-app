@@ -1,4 +1,4 @@
-import { Box, Screen, Typography } from '@/design-system';
+import { Box, Empty, Screen, Typography } from '@/design-system';
 import { ActivityIndicator, RefreshControl } from 'react-native';
 import { useFoodEntries } from './use-food-entries';
 import { useCallback, useMemo } from 'react';
@@ -66,6 +66,7 @@ export const FoodEntriesScreen = () => {
           }
           onEndReached={() => hasNextPage && fetchNextPage()}
           onEndReachedThreshold={0.3}
+          ListEmptyComponent={Empty}
           ListFooterComponent={
             isFetchingNextPage ? (
               <Box sx={{ m: 'lg' }}>

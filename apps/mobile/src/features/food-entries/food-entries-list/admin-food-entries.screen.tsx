@@ -1,4 +1,4 @@
-import { Box, Screen, Typography } from '@/design-system';
+import { Box, Empty, Screen, Typography } from '@/design-system';
 import { ActivityIndicator, RefreshControl } from 'react-native';
 import { useCallback, useMemo } from 'react';
 import { FoodEntryCard } from './offer-entry-card/offer-entry-card.component';
@@ -64,6 +64,7 @@ export const AdminFoodEntriesScreen = () => {
           }
           onEndReached={() => hasNextPage && fetchNextPage()}
           onEndReachedThreshold={0.3}
+          ListEmptyComponent={Empty}
           ListFooterComponent={
             isFetchingNextPage ? (
               <Box sx={{ m: 'lg' }}>

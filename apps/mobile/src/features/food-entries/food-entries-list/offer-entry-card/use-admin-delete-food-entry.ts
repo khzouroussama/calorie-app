@@ -30,6 +30,14 @@ export const useAdminDeleteFoodEntry = createMutation<
     queryClient.invalidateQueries({
       queryKey: ['admin/food-entries'],
     });
+
+    queryClient.invalidateQueries({
+      queryKey: ['admin/user-reports'],
+    });
+
+    queryClient.invalidateQueries({
+      queryKey: ['admin/global-reports'],
+    });
   },
   onError: () => {
     showMessage({

@@ -1,7 +1,7 @@
-import { Box, Screen, Typography } from '@/design-system';
+import { Box, Empty, Icons, Screen, Typography } from '@/design-system';
 import { ActivityIndicator, RefreshControl } from 'react-native';
 import { useCallback, useMemo } from 'react';
-import { spacing } from '@/design-system/theme';
+import { colors, spacing } from '@/design-system/theme';
 import Animated, { Layout } from 'react-native-reanimated';
 import { useDailyCalories } from './use-daily-calories';
 import { DailyCaloriesCard } from './daily-calories-card';
@@ -63,6 +63,7 @@ export const DailyCaloriesScreen = () => {
           }
           onEndReached={() => hasNextPage && fetchNextPage()}
           onEndReachedThreshold={0.3}
+          ListEmptyComponent={Empty}
           ListFooterComponent={
             isFetchingNextPage ? (
               <Box sx={{ m: 'lg' }}>
