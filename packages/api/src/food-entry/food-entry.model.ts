@@ -236,6 +236,30 @@ export const updateFoodEntry = async (
         },
       }),
     });
+
+    transactItems.push({
+      Update: {
+        ...buildDynamicUpdateParams(new GlobalEntryCount({ date: oldDate }), {
+          UpdateExpression: 'ADD #totalEntries :one',
+          ExpressionAttributeNames: { '#totalEntries': 'count' },
+          ExpressionAttributeValues: {
+            ':one': { N: '-1' },
+          },
+        }),
+      },
+    });
+
+    transactItems.push({
+      Update: {
+        ...buildDynamicUpdateParams(new GlobalEntryCount({ date: newDate }), {
+          UpdateExpression: 'ADD #totalEntries :one',
+          ExpressionAttributeNames: { '#totalEntries': 'count' },
+          ExpressionAttributeValues: {
+            ':one': { N: '1' },
+          },
+        }),
+      },
+    });
   }
 
   console.log(JSON.stringify({ transactItems }));
