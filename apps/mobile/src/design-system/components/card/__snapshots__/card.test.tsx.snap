@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Card /> renders correctly 1`] = `
+<View
+  style={
+    [
+      {
+        "backgroundColor": "#FFFFFF",
+        "borderColor": "#D7CEC9",
+        "borderRadius": 8,
+        "borderWidth": 1,
+        "gap": 12,
+        "justifyContent": "flex-end",
+        "padding": 12,
+      },
+      undefined,
+    ]
+  }
+>
+  <Text
+    style={
+      [
+        [
+          {
+            "fontSize": 16,
+            "lineHeight": 24,
+          },
+          {
+            "fontFamily": "spaceGroteskRegular",
+          },
+          {
+            "color": "#191015",
+          },
+        ],
+        undefined,
+        undefined,
+        {
+          "color": undefined,
+        },
+        undefined,
+      ]
+    }
+  >
+    Test
+  </Text>
+</View>
+`;

@@ -1,0 +1,77 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<TextField /> renders correctly 1`] = `
+<View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": false,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    {
+      "opacity": 1,
+    }
+  }
+>
+  <View
+    style={
+      [
+        {
+          "alignItems": "center",
+          "backgroundColor": "#F4F2F1",
+          "borderColor": "#B6ACA6",
+          "borderRadius": 4,
+          "borderWidth": 1,
+          "flexDirection": "row",
+          "overflow": "hidden",
+        },
+        undefined,
+      ]
+    }
+  >
+    <TextInput
+      editable={true}
+      placeholderTextColor="#564E4A"
+      style={
+        {
+          "alignSelf": "stretch",
+          "color": "#191015",
+          "flex": 1,
+          "fontFamily": "spaceGroteskRegular",
+          "fontSize": 16,
+          "height": 24,
+          "marginHorizontal": 12,
+          "marginVertical": 8,
+          "paddingHorizontal": 0,
+          "paddingVertical": 0,
+        }
+      }
+      textAlignVertical="top"
+      underlineColorAndroid="rgba(0, 0, 0, 0)"
+      value="Hellp"
+    />
+  </View>
+</View>
+`;

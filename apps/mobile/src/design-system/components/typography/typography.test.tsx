@@ -1,11 +1,11 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import Box from './box';
+import { Typography } from './typography';
 
-describe('<Box />', () => {
+describe('<Typography />', () => {
   it('renders correctly', () => {
-    const tree = renderer.create(<Box />).toJSON();
+    const tree = renderer.create(<Typography text="Hellp" />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 });

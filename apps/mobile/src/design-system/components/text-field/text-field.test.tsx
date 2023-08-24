@@ -1,11 +1,11 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import Box from './box';
+import { TextField } from './text-field';
 
-describe('<Box />', () => {
+describe('<TextField />', () => {
   it('renders correctly', () => {
-    const tree = renderer.create(<Box />).toJSON();
+    const tree = renderer.create(<TextField value="Hellp" />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 });

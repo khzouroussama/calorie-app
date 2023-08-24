@@ -1,11 +1,11 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import Box from './box';
+import Button from './button';
 
-describe('<Box />', () => {
+describe('<Button />', () => {
   it('renders correctly', () => {
-    const tree = renderer.create(<Box />).toJSON();
+    const tree = renderer.create(<Button />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 });

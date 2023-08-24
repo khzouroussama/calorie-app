@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Button /> renders correctly 1`] = `
+<RNGestureHandlerButton
+  collapsable={false}
+  delayLongPress={600}
+  enabled={true}
+  exclusive={true}
+  handlerTag={1}
+  handlerType="NativeViewGestureHandler"
+  onGestureEvent={[Function]}
+  onGestureHandlerEvent={[Function]}
+  onGestureHandlerStateChange={[Function]}
+  onHandlerStateChange={[Function]}
+  rippleColor={0}
+  touchSoundDisabled={false}
+>
+  <View
+    accessible={true}
+    collapsable={false}
+    style={{}}
+  >
+    <View
+      animatedStyle={
+        {
+          "value": {
+            "backgroundColor": "#C76542",
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
+          },
+        }
+      }
+      collapsable={false}
+      style={
+        {
+          "alignItems": "center",
+          "backgroundColor": "#C76542",
+          "borderColor": "#C76542",
+          "borderRadius": 8,
+          "borderWidth": 1,
+          "flexDirection": "row",
+          "justifyContent": "center",
+          "paddingHorizontal": 12,
+          "paddingVertical": 8,
+          "transform": [
+            {
+              "scale": 1,
+            },
+          ],
+        }
+      }
+    />
+  </View>
+</RNGestureHandlerButton>
+`;

@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Typography /> renders correctly 1`] = `
+<Text
+  style={
+    [
+      [
+        {
+          "fontSize": 16,
+          "lineHeight": 24,
+        },
+        {
+          "fontFamily": "spaceGroteskRegular",
+        },
+        {
+          "color": "#191015",
+        },
+      ],
+      undefined,
+      undefined,
+      {
+        "color": undefined,
+      },
+      undefined,
+    ]
+  }
+>
+  Hellp
+</Text>
+`;

@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 
-import { TextField } from '../text-field';
+import { TextField, TextFieldProps } from '../text-field';
 import { Box } from '../box';
 
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -37,6 +37,8 @@ export const DateTimeField = memo(
       onChange(date);
       hideDatePicker();
     };
+
+    console.log({ value });
 
     return (
       <Box>
