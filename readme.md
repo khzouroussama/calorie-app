@@ -2,6 +2,10 @@
 
 This repository contains the codebase for the Calorie App, a comprehensive solution for tracking food entries and managing calorie intake.
 
+## Demo video
+
+https://drive.google.com/file/d/1lbqzza96xdT14HDusOsPwbWOEotAi_Wl/view?usp=sharing
+
 ## Structure
 
 The monorepo is organized using Yarn workspaces into several packages and applications:
@@ -83,6 +87,6 @@ is easy to change that limit in the code, per user. You don’t have to create a
 
 ### Extra requirements
 
-[ ] Show my daily limit chart on the home screen
+[x] Show my daily limit chart on the home screen
 
-[ ] Allow changing the
+[x] Allow changing the daily limit
