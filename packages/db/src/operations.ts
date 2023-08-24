@@ -109,7 +109,7 @@ export async function getItem(
       }),
     );
   } catch (e) {
-    console.log('getItem:');
+    console.log('getItem:', e);
     dbErrorLogger(e);
     throw { success: false };
   }

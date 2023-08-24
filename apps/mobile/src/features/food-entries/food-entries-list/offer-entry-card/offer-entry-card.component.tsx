@@ -19,7 +19,7 @@ type FoodEntryCardProps = {
 
 export const FoodEntryCard = ({ foodEntry }: FoodEntryCardProps) => {
   const navigation = useNavigation();
-  const { name, calories, consumptionDate, userId, photoUrl } = foodEntry;
+  const { name, calories, consumptionDate, userId, photo } = foodEntry;
   const { mutate: deleteFoodEntry, isLoading } = useDeleteFoodEntry();
   const { mutate: adminDeleteFoodEntry, isLoading: isAdminDeleteLoading } =
     useAdminDeleteFoodEntry();
@@ -88,7 +88,7 @@ export const FoodEntryCard = ({ foodEntry }: FoodEntryCardProps) => {
                 consumptionDate,
                 userId,
                 photo: {
-                  uri: photoUrl,
+                  uri: photo?.uri,
                 },
               },
             );
@@ -115,8 +115,8 @@ export const FoodEntryCard = ({ foodEntry }: FoodEntryCardProps) => {
                   overflow: 'hidden',
                 }}
               >
-                {photoUrl ? (
-                  <Image source={{ uri: photoUrl }} height={50} width={50} />
+                {photo.uri ? (
+                  <Image source={{ uri: photo.uri }} height={50} width={50} />
                 ) : (
                   <Icons.Buguette color={colors.neutral100} size={32} />
                 )}

@@ -6,10 +6,10 @@ import {
   schemaValidator,
 } from '@calorie-app/http';
 import { FoodEntryModel, createFoodEntry } from '../food-entry.model';
-import { object, string } from 'yup';
+import { number, object, string } from 'yup';
 import { uploadFoodEntryPhoto } from '../food-entry.helpers';
 
-type Params = BodyParams<Omit<FoodEntryModel & { photo: any }, 'id'>>;
+type Params = BodyParams<Omit<FoodEntryModel, 'id'>>;
 
 export const main = createHandler<Params>(async (event) => {
   try {
@@ -20,7 +20,7 @@ export const main = createHandler<Params>(async (event) => {
         name: event.body.name,
         calories: event.body.calories,
         consumptionDate: new Date(event.body.consumptionDate).toISOString(),
-        photoUrl: await uploadFoodEntryPhoto(event.body?.photo),
+        photo: await uploadFoodEntryPhoto(event.body?.photo),
       },
     );
 
@@ -34,7 +34,7 @@ main.use([
   schemaValidator<Params>({
     body: object({
       name: string().required(),
-      calories: string().required(),
+      calories: number().required(),
       consumptionDate: string().required(),
       photo: object({
         uri: string().optional().nullable(),

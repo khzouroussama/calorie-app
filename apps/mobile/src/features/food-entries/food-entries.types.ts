@@ -3,8 +3,11 @@ export interface FoodEntry {
   id?: string;
   name: string;
   calories: number;
-  photoUrl?: string;
   consumptionDate?: string;
   createdAt?: string;
   userId?: string;
+  photo?: {
+    uri?: string;
+    base64?: string;
+  };
 }

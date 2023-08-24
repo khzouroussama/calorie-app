@@ -21,6 +21,7 @@ export type FoodEntryFormData = {
   userId?: string;
 
   photo?: {
+    base64?: string;
     uri: string;
     name: string;
     type: string;

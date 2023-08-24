@@ -11,7 +11,7 @@ import {
 } from '@calorie-app/http';
 import { object, string } from 'yup';
 
-type Params = BodyParams<Omit<FoodEntryModel & { photo: any }, 'id'>> &
+type Params = BodyParams<Omit<FoodEntryModel, 'id'>> &
   PathParams<{ id: string }>;
 
 export const main = createHandler<Params>(async (event, context) => {
@@ -21,7 +21,7 @@ export const main = createHandler<Params>(async (event, context) => {
       name: event.body.name,
       calories: event.body.calories,
       consumptionDate: new Date(event.body.consumptionDate).toISOString(),
-      photoUrl: await uploadFoodEntryPhoto(event.body?.photo),
+      photo: await uploadFoodEntryPhoto(event.body?.photo),
     });
 
     return httpResponse(result);

@@ -9,6 +9,7 @@ module.exports = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@calorie-app/db': '<rootDir>/../db/src',
+    '^@calorie-app/http': '<rootDir>/../http/src',
   },
   globals: {
     'ts-jest': {

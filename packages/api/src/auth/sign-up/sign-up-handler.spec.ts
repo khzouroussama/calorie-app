@@ -61,7 +61,7 @@ describe('Lambda function tests', () => {
     });
 
     const main = (await import('./sign-up-handler')).main;
-    const result = await main(mockEvent as any, {} as any);
+    const result = await main(mockEvent as any);
 
     // Assertions
     // expect(cognitoMock).toHaveReceivedCommandWith(AdminAddUserToGroupCommand, {

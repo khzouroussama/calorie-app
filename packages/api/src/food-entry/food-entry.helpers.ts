@@ -9,20 +9,23 @@ const s3Client = new S3Client({ region: process.env.REGION });
 const BUCKET_NAME = `calorie-app-bucket-${process.env.STAGE || 'dev'}`;
 
 export const uploadFoodEntryPhoto = async (file: any) => {
-  if (!file) return undefined;
+  if (!file?.base64) return undefined;
   const photoKey = `food-entry-photos/${Date.now()}-${file?.name}`;
 
   if (file) {
     await s3Client.send(
       new PutObjectCommand({
         Bucket: BUCKET_NAME,
-        Body: Buffer.from(file?.uri, 'base64'),
+        Body: Buffer.from(file?.base64, 'base64'),
         Key: photoKey,
       }),
     );
   }
 
-  return photoKey;
+  return {
+    key: photoKey,
+    filename: file?.name,
+  };
 };
 
 export const getFoodEntrySignedUrl = async (photoKey?: string) => {

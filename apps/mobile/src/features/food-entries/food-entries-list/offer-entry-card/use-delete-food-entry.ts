@@ -29,6 +29,14 @@ export const useDeleteFoodEntry = createMutation<
     queryClient.invalidateQueries({
       queryKey: ['food-entries'],
     });
+
+    queryClient.invalidateQueries({
+      queryKey: ['daily-calories'],
+    });
+
+    queryClient.invalidateQueries({
+      queryKey: ['me'],
+    });
   },
   onError: () => {
     showMessage({

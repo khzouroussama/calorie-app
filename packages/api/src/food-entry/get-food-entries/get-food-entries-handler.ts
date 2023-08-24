@@ -10,7 +10,7 @@ import { UserKeys } from '@/users/user.model';
 import { number, object, string } from 'yup';
 import { getUserFoodEntries } from '../food-entry.model';
 
-type Params = QueryParams<{ dateFrom: string; dateTo: string }> &
+type Params = QueryParams<{ dateFrom?: string; dateTo?: string }> &
   PaginationParams;
 
 export const main = createHandler<Params>(async (event, context) => {

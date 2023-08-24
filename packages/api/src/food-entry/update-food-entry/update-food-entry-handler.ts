@@ -9,7 +9,7 @@ import { FoodEntryModel, updateFoodEntry } from '../food-entry.model';
 import { uploadFoodEntryPhoto } from '../food-entry.helpers';
 
 type Params = PathParams<{ id: string }> &
-  BodyParams<Omit<FoodEntryModel & { photo: any }, 'id'>>;
+  BodyParams<Omit<FoodEntryModel, 'id'>>;
 
 export const main = createHandler<Params>(async (event, context) => {
   try {
@@ -18,7 +18,7 @@ export const main = createHandler<Params>(async (event, context) => {
       {
         ...event.body,
         id: event.pathParameters?.id,
-        photoUrl: await uploadFoodEntryPhoto(event.body?.photo),
+        photo: await uploadFoodEntryPhoto(event.body?.photo),
       },
     );
 

@@ -23,11 +23,17 @@ export interface FoodEntryModel {
   id?: string;
   name: string;
   calories: number;
-  photoUrl?: string;
   consumptionDate: string;
   createdAt?: string;
   updatedAt?: string;
   userId?: string;
+  photo?: {
+    base64?: string;
+    uri?: string;
+    type?: string;
+    filename?: string;
+    key: string;
+  };
 }
 
 export class FoodEntryKeys extends ItemKeys {
@@ -59,10 +65,13 @@ export class FoodEntry extends Item<FoodEntryModel> {
       name: attributeMap?.name?.S,
       calories: parseFloat(attributeMap?.calories?.N || '0'),
       consumptionDate: attributeMap?.consumptionDate?.S,
-      photoUrl: attributeMap?.photoUrl?.S,
       createdAt: attributeMap?.createdAt?.S,
       updatedAt: attributeMap?.updatedAt?.S,
       userId: attributeMap?.PK?.S?.split?.('#')?.[1],
+      photo: {
+        key: attributeMap?.photo?.M?.key?.S,
+        filename: attributeMap?.photo?.M?.filename?.S,
+      },
     };
   }
 
@@ -161,57 +170,79 @@ export const updateFoodEntry = async (
 ) => {
   const client = getClient();
 
+  const oldDate = foodEntry.id!.split('T')[0];
+  const newDate = foodEntry.consumptionDate.split('T')[0];
+
+  if (!foodEntry.photo) {
+    delete foodEntry.photo;
+  }
+
   const oldFood = new FoodEntry(userId, {
     ...foodEntry,
     consumptionDate: foodEntry.id as string,
   });
 
-  const newFood = new FoodEntry(userId, {
-    ...foodEntry,
-    updatedAt: new Date().toISOString(),
-  });
-
   const oldFoodEntryResult = await getItem(oldFood.keys);
   const oldFoodEntry = FoodEntry.fromItem(oldFoodEntryResult.Item ?? {});
 
-  const userCalorieCount = new UserCalorieCount({
-    userId,
-    date: foodEntry.consumptionDate!.split('T')[0],
+  const userCalorieCount = new UserCalorieCount({ userId, date: newDate });
+  const oldUserCalorieCount = new UserCalorieCount({ userId, date: oldDate });
+
+  const newFood = new FoodEntry(userId, {
+    ...oldFoodEntry,
+    ...{
+      ...foodEntry,
+      id: `${foodEntry.consumptionDate}`,
+      updatedAt: new Date().toISOString(),
+    },
   });
 
-  console.log({
-    d: oldFoodEntry,
-    oldFoodEntryResult,
-    foodEntrys: foodEntry.consumptionDate,
-  });
+  const areDifferentDates = oldDate !== newDate;
+
+  const transactItems = [
+    {
+      Update: buildDynamicUpdateParams(newFood),
+    },
+    {
+      Update: buildDynamicUpdateParams(userCalorieCount, {
+        UpdateExpression: 'ADD #totalOfCalories :total',
+        ExpressionAttributeNames: {
+          '#totalOfCalories': 'totalOfCalories',
+        },
+        ExpressionAttributeValues: {
+          ':total': areDifferentDates
+            ? {
+                N: `${foodEntry.calories}`,
+              }
+            : {
+                N: `${-oldFoodEntry.calories + foodEntry.calories}`,
+              },
+        },
+      }),
+    },
+  ];
+
+  if (areDifferentDates) {
+    transactItems.push({
+      Update: buildDynamicUpdateParams(oldUserCalorieCount, {
+        UpdateExpression: 'ADD #totalOfCalories :total',
+        ExpressionAttributeNames: {
+          '#totalOfCalories': 'totalOfCalories',
+        },
+        ExpressionAttributeValues: {
+          ':total': {
+            N: `${-oldFoodEntry.calories}`,
+          },
+        },
+      }),
+    });
+  }
+
+  console.log(JSON.stringify({ transactItems }));
 
   await executeTransactWrite({
     client,
-    params: {
-      TransactItems: [
-        {
-          Put: {
-            TableName: DYNAMODB_TABLE_NAME,
-            Item: newFood.toItem(),
-          },
-        },
-        {
-          Update: {
-            ...buildDynamicUpdateParams(userCalorieCount, {
-              UpdateExpression: 'ADD #totalOfCalories :total',
-              ExpressionAttributeNames: {
-                '#totalOfCalories': 'totalOfCalories',
-              },
-              ExpressionAttributeValues: {
-                ':total': {
-                  N: `${-oldFoodEntry.calories + foodEntry.calories}`,
-                },
-              },
-            }),
-          },
-        },
-      ],
-    },
+    params: { TransactItems: transactItems },
   });
 
   if (
@@ -325,9 +356,14 @@ export const getUserFoodEntries = async (
   const foodEntriesWithSignedUrl = await Promise.all(
     foodEntries?.map(async (item) => ({
       ...item,
-      photoUrl: await getFoodEntrySignedUrl(item.photoUrl),
+      photo: {
+        ...item.photo,
+        uri: await getFoodEntrySignedUrl(item?.photo?.key),
+      },
     }))!,
   );
+
+  console.log(JSON.stringify(foodEntries));
 
   return {
     foodEntries: foodEntriesWithSignedUrl,
@@ -377,10 +413,15 @@ export const getFoodEntries = async (
 
   const foodEntries = result.Items?.map((item) => FoodEntry.fromItem(item));
 
+  console.log(JSON.stringify(foodEntries));
+
   const foodEntriesWithSignedUrl = await Promise.all(
     foodEntries?.map(async (item) => ({
       ...item,
-      photoUrl: await getFoodEntrySignedUrl(item.photoUrl),
+      photo: {
+        ...item.photo,
+        uri: await getFoodEntrySignedUrl(item?.photo?.key),
+      },
     }))!,
   );
 

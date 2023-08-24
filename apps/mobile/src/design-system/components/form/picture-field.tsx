@@ -18,19 +18,12 @@ type FormPictureFieldProps = {
   ) => React.ReactNode;
   value?: {
     uri: string;
+    base64: string;
     name: string;
     type: string;
   };
   imagePickerOptions?: ImagePicker.ImagePickerOptions;
 } & Omit<DateTimeFieldProps, 'value'>;
-
-const isBase64Uri = (uri: string) => {
-  if (!uri) return false;
-  if (uri.startsWith('http://') || uri.startsWith('https://')) {
-    return false;
-  }
-  return true;
-};
 
 export function FormPicturField(props: FormPictureFieldProps) {
   const [loading, setLoading] = React.useState(true);
@@ -58,7 +51,7 @@ export function FormPicturField(props: FormPictureFieldProps) {
       const type = match ? `image/${match[1]}` : `image`;
 
       field.onChange({
-        uri: asset?.base64,
+        base64: asset?.base64,
         name: filename,
         type,
       });
@@ -68,7 +61,7 @@ export function FormPicturField(props: FormPictureFieldProps) {
 
   return (
     <Pressable onPress={handleChange}>
-      {field.value?.uri ? (
+      {field.value?.uri || field.value?.base64 ? (
         <Box
           sx={{
             borderRadius: 100,
@@ -82,8 +75,8 @@ export function FormPicturField(props: FormPictureFieldProps) {
             width={92}
             height={92}
             source={{
-              uri: isBase64Uri(field?.value?.uri)
-                ? 'data:image/jpeg;base64,' + field.value?.uri
+              uri: field?.value?.base64
+                ? 'data:image/jpeg;base64,' + field.value?.base64
                 : field.value.uri,
             }}
             {...inputProps}
