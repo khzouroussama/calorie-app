@@ -1,0 +1,36 @@
+name: Release the app
+on:
+  workflow_dispatch:
+      inputs:
+        platform:
+          default: 'Both'
+          description: 'Select the platforms to build'
+          options:
+            - 'Both'
+            - 'Android'
+            - 'iOS'
+          required: true
+          type: choice
+        branch:
+          default: 'main'
+          description: 'What branch or tag to build?'
+          required: true
+          type: string
+        environment:
+          default: 'QA'
+          description: 'Select the environment of the build'
+          options:
+            - 'Production'
+            - 'QA'
+            - 'UAT'
+          required: true
+          type: choice
+jobs:
+  TestJob:
+    name: deploy to staging
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
