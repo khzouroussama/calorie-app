@@ -34,3 +34,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '10.x'
+      - name: Print Vars
+        run: |
+          echo $MY_COOL_VAR
+        env:
+          MY_COOL_VAR: ${{ vars.MY_COOL_VAR }}
